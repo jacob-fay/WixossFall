@@ -1,0 +1,56 @@
+[Use Conditions] You have two or more white LRIG on your field.
+
+Put target SIGNI on your opponent's field into its owner's trash. Return target SIGNI on your opponent's field to its owner's hand.
+
+
+
+[Use Conditions] [Team] <Ancient Surprise>
+
+You gain the following ability for the duration of the game.
+u300e[Auto] {1/Turn}: During your turn, when a SIGNI enters your field, choose one of the following.
+u2460If the SIGNI that enters the field is red, you may pay {Colorless}. If you do, vanish target SIGNI on your opponent's field with power 8000 or less.
+u2461If the SIGNI that enters the field is blue, draw a card.
+u2462If the SIGNI that enters the field is green, u3010Ener Charge 1u3011.300f
+
+
+
+[Use Conditions] You have two or more blue LRIG on your field.
+
+Draw two cards. Then, put target SIGNI on your opponent's field on the bottom of its owner's deck.
+
+
+
+[Use Conditions] You have two or more black LRIG on your field.
+
+Target SIGNI on your opponent's field gets -12000 power until end of turn. Then, choose one of the following for every ten cards in your trash.
+u2460Add up to two target SIGNI that share a color with your center LRIG from your trash to your hand.
+u2461Put the top ten cards of your opponent's deck into their trash.
+
+
+
+Choose a player. That player shuffles all cards in their trash into their deck. You draw a card.
+
+
+
+Put two <Demon> SIGNI on your field into their owner's trash. If you do, you gain the following ability for the duration of the game.
+u300e[Auto]: At the end of your turn, add target <Demon> SIGNI from your trash to your hand.300f
+
+
+
+[Auto]: At the beginning of your main phase, you may put a white SIGNI on your field into their owner's trash and pay {White}. If you do, return target SIGNI on your opponent's field to its owner's hand.
+[Enter]: Draw a card and u3010Ener Charge 1u3011.
+[Action] {1/Game} {Whitex0}: During the main phase and attack phase of your opponent's next turn, SIGNI on your field gain u3010Shadowu3011. (Affects SIGNI that enter the field after this ability has been activated.)
+
+
+
+[Auto] {1/Turn}: When this LRIG attacks, shuffle your deck and reveal the top card of your deck. If that card is a level one SIGNI, draw a card. If that card is a SIGNI with a {Guard Icon}, crush one of your opponent's Life Cloth.
+[Action] {1/Game} {Whitex0}: Return target SIGNI on your opponent's field to its owner's hand.
+
+
+
+[Auto]: Whenever this LRIG attacks, you may put a card underneath this LRIG into its owner's LRIG trash. If you do, your opponent discards a card at random.
+[Auto]: Whenever your opponent discards a card by your effect, freeze target SIGNI on your opponent's field.
+[Action] {1/Game} {Bluex0}: Each player draws two cards. Your opponent discards two cards at random.
+
+
+
