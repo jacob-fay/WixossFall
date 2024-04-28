@@ -9,8 +9,8 @@ class Test(Resource):
     allcards = db().allCards
     def get(self,name,offset):
         print(name)
-        if (name == 'RANDOMPLSDONOTGUESSPLS'):
-            name = ''
+        if (name == 'RANDOMPLSDONOTGUESSPLS:)'):
+            return Test.allcards[offset : offset + 16]
         list = []
         for item in Regex.regex(name,self.allcards):
             list.append(item.image)

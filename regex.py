@@ -34,64 +34,49 @@ class Regex:
             return False
         return card.lifeburst != ""
     def regex(string:str, db: list):
-        #BREAKS IF SAME FILTER IS USED PLS DON'T DO THIS
         usedFunctions = []
         usedNegitivefilter = []
         space_seperated = string.split(" ")
+        
+        #function mapping for ":"
+        functionMap = {hash('type') : [usedFunctions,Regex.typeFunc]}
+        functionMap[hash('class')] = [usedFunctions,Regex.classFunc]
+        functionMap[hash('level')] = [usedFunctions,Regex.levelFunc]
+        functionMap[hash('text')] = [usedFunctions,Regex.textFunc]
+        functionMap[hash('-type')] = [usedNegitivefilter,Regex.classFunc]
+        functionMap[hash('-class')] = [usedNegitivefilter,Regex.classFunc]
+        functionMap[hash('-level')] = [usedNegitivefilter,Regex.levelFunc]
+        functionMap[hash('-text')] = [usedNegitivefilter,Regex.textFunc]
+        functionMap[hash('is')] = [usedFunctions,Regex.dissonaFunc]
+        functionMap[hash('-is')] = [usedNegitivefilter,Regex.dissonaFunc]
+        functionMap[hash('has')] = [usedFunctions,Regex.lifeburstFunc]
+        functionMap[hash('-has')] = [usedNegitivefilter,Regex.lifeburstFunc]
+
+        #function map for power filtering
+        powerMap = {}
+        powerMap[hash('power>')] = [usedFunctions,Regex.powerGreaterFunc]
+        powerMap[hash('power<')] = [usedFunctions,Regex.powerGreaterFunc]
+        powerMap[hash('power>')] = [usedNegitivefilter,Regex.powerLesserFunc]
+        powerMap[hash('power<')] = [usedNegitivefilter,Regex.powerLesserFunc]
+        
         for command in space_seperated:
             if command.__contains__(":") or command.__contains__(">")  or command.__contains__("<"):
-                
                 if command.__contains__(":"):
                     action = command.split(":")[0]
                     filter = command.split(':')[1]
-                
-                    match action:
-                        case 'type':
-                            usedFunctions.append([filter, Regex.typeFunc])
-                        case 'class':
-                            usedFunctions.append([filter,Regex.classFunc])
-                        case 'level':
-                             usedFunctions.append([filter,Regex.levelFunc])
-                        case '-type':
-                            usedNegitivefilter.append([filter, Regex.typeFunc])
-                        case '-class':
-                            usedNegitivefilter.append([filter, Regex.classFunc])
-                        case '-level':
-                            usedNegitivefilter.append([filter, Regex.levelFunc])
-                        case 'text':
-                             usedFunctions.append([filter,Regex.textFunc])
-                        case '-text':
-                             usedNegitivefilter.append([filter, Regex.textFunc])
-                        case 'is':
-                            match filter:
-                                case 'dissona':
-                                    usedFunctions.append([filter,Regex.dissonaFunc])
-                                case '-dissona':
-                                    usedNegitivefilter.append([filter,Regex.dissonaFunc])
-                        case 'has':
-                            match filter:
-                                case 'lifeburst':
-                                    usedFunctions.append([filter,Regex.lifeburstFunc])
-                                case '-lifeburst':
-                                    usedNegitivefilter.append([filter,Regex.lifeburstFunc])
-
+                    usedOrNegFilter:list = functionMap[hash(action)][0]
+                    usedOrNegFilter.append([filter,functionMap[hash(action)][1]])
                 elif command.__contains__(">"):
                     action = command.split(">")[0]
                     filter = command.split('>')[1]
-                    match action:
-                        case 'power':
-                             usedFunctions.append([filter, Regex.powerGreaterFunc])
-                        case '-power':
-                             usedNegitivefilter.append([filter, Regex.powerGreaterFunc])
+                    usedOrNegFilter:list = powerMap[hash(action+'>')][0]
+                    usedOrNegFilter.append([filter,functionMap[hash(action+'>')][1]])
                 
                 elif command.__contains__("<"):
                     action = command.split("<")[0]
                     filter = command.split('<')[1]
-                    match action:
-                        case 'power':
-                             usedFunctions.append([filter, Regex.powerLesserFunc])
-                        case '-power':
-                             usedNegitivefilter.append([filter, Regex.powerLesserFunc])
+                    usedOrNegFilter:list = powerMap[hash(action+'<')][0]
+                    usedOrNegFilter.append([filter,functionMap[hash(action+'<')][1]])
                         
             else:
                 print('test')
