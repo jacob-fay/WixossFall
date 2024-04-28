@@ -52,7 +52,7 @@ class Test extends Component {
     }
     reset = () => {
         this.state.searchQuery = 'RANDOMPLSDONOTGUESSPLS'
-        this.fetchData('RANDOMPLSDONOTGUESSPLS:)')
+        this.fetchData('RANDOMPLSDONOTGUESSPLS')
         this.state.field = ''
     }
     onchange(e){

@@ -6,11 +6,13 @@ from flask import abort
 from jsonToCards import db
 from regex import Regex
 class Test(Resource):
-    allcards = db().allCards
+    def __init__(self) -> None:
+        super().__init__()
+        self.allcards = [ x.image for x in db().allCards]
     def get(self,name,offset):
-        print(name)
-        if (name == 'RANDOMPLSDONOTGUESSPLS:)'):
-            return Test.allcards[offset : offset + 16]
+        if (name == 'RANDOMPLSDONOTGUESSPLS'):
+            print(self.allcards)
+            return self.allcards[offset : offset + 16]
         list = []
         for item in Regex.regex(name,self.allcards):
             list.append(item.image)

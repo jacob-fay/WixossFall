@@ -187,6 +187,7 @@ class db:
         color =  db.colorConverter(card["color"])
         image = card['image']
         subtype = ''
+       
         try:
             subtype = card['subtype']
             return Card(int,set,name,color,CardType.piece,artist,cardText,image,subtype)
@@ -238,6 +239,7 @@ class db:
         allCards:list
         namesUsed:set = set()
         with open('sample.json','r') as file:
+            
             jFile = json.load(file)
             for index,card in enumerate(jFile):
                 if (card["name"] in namesUsed):

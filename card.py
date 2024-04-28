@@ -75,6 +75,7 @@ class Piece(Card):
         self.timing = timing
     def __str__(self):
         return f'{super().__str__()}\n{self.cost}\nUse timing: {self.timing}'
+    
 class Spell(Card):
     __slots__ = ('cost','lifeburst')
     def __init__(self, id: int, set: Set, name: str, color, cardType: CardType, artist: str, textBox: str,cost: Cost,image:str,subtype:str,lifeburst:str) -> None:
