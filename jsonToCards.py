@@ -225,7 +225,8 @@ class db:
     def spellParser(card:dict):
         cardparsed = db.cardParser(card)
         cost = db.costConverter(card["cost"])
-        return Spell(cardparsed.id,cardparsed.set,cardparsed.name,cardparsed.color,CardType.spell,cardparsed.artist,cardparsed.textBox,cost,cardparsed.image,cardparsed.subtype)
+        lifeburst = card['power_text']
+        return Spell(cardparsed.id,cardparsed.set,cardparsed.name,cardparsed.color,CardType.spell,cardparsed.artist,cardparsed.textBox,cost,cardparsed.image,cardparsed.subtype,lifeburst)
 
 
 

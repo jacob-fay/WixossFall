@@ -29,6 +29,10 @@ class Regex:
         return int(card.power) < int(filter)
     def dissonaFunc(filter:str,card:Card):
         return card.subtype.lower() == 'dissona'
+    def lifeburstFunc(filter:str,card:Card):
+        if type(card) != Signi and type(card) != Spell:
+            return False
+        return card.lifeburst != ""
     def regex(string:str, db: list):
         #BREAKS IF SAME FILTER IS USED PLS DON'T DO THIS
         usedFunctions = []
@@ -61,11 +65,15 @@ class Regex:
                         case 'is':
                             match filter:
                                 case 'dissona':
-                                    
                                     usedFunctions.append([filter,Regex.dissonaFunc])
                                 case '-dissona':
                                     usedNegitivefilter.append([filter,Regex.dissonaFunc])
-
+                        case 'has':
+                            match filter:
+                                case 'lifeburst':
+                                    usedFunctions.append([filter,Regex.lifeburstFunc])
+                                case '-lifeburst':
+                                    usedNegitivefilter.append([filter,Regex.lifeburstFunc])
 
                 elif command.__contains__(">"):
                     action = command.split(">")[0]
