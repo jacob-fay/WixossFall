@@ -28,7 +28,7 @@ class Regex:
         card:Signi
         return int(card.power) < int(filter)
     def dissonaFunc(filter:str,card:Card):
-        return card.subtype == 'dissona'
+        return card.subtype.lower() == 'dissona'
     def regex(string:str, db: list):
         #BREAKS IF SAME FILTER IS USED PLS DON'T DO THIS
         usedFunctions = []
@@ -61,7 +61,11 @@ class Regex:
                         case 'is':
                             match filter:
                                 case 'dissona':
+                                    
                                     usedFunctions.append([filter,Regex.dissonaFunc])
+                                case '-dissona':
+                                    usedNegitivefilter.append([filter,Regex.dissonaFunc])
+
 
                 elif command.__contains__(">"):
                     action = command.split(">")[0]
@@ -99,6 +103,6 @@ class Regex:
                     break
             
             if (mat == True):
-                print('done')
+                
                 match.append(card)
         return match

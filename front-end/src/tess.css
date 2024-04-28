@@ -1,0 +1,26 @@
+.card {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: -6px;
+    margin-right: -6px;
+    margin-bottom: 1em;
+    align-content: stretch;
+}
+/* img{
+    page-break-after: auto;
+    page-break-before: auto;
+    page-break-inside: avoid;
+    position: relative;
+    display: block;
+    width: 49.25%;
+    width: 20%;
+    margin: 0 0 9px 0;
+} */
+img {
+    width: calc(100% / 5);
+    padding: 0px 6px 15px;
+    height: 100%;
+}
+button {
+    height: 20px;
+}
