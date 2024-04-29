@@ -8,14 +8,13 @@ from regex import Regex
 class Test(Resource):
     def __init__(self) -> None:
         super().__init__()
-        self.allcards = [ x.image for x in db().allCards]
+        self.allcards_images = [ x.image for x in db().allCards]
+        self.allcards = db().allCards
     def get(self,name,offset):
         if (name == 'RANDOMPLSDONOTGUESSPLS'):
-            print(self.allcards)
-            return self.allcards[offset : offset + 16]
+            return self.allcards_images[offset : offset + 16]
         list = []
         for item in Regex.regex(name,self.allcards):
             list.append(item.image)
-        print(list)
         return list[offset : offset + 16]
 

@@ -60,27 +60,26 @@ class Regex:
         powerMap[hash('power<')] = [usedNegitivefilter,Regex.powerLesserFunc]
         
         for command in space_seperated:
-            if command.__contains__(":") or command.__contains__(">")  or command.__contains__("<"):
-                if command.__contains__(":"):
-                    action = command.split(":")[0]
-                    filter = command.split(':')[1]
-                    usedOrNegFilter:list = functionMap[hash(action)][0]
-                    usedOrNegFilter.append([filter,functionMap[hash(action)][1]])
-                elif command.__contains__(">"):
-                    action = command.split(">")[0]
-                    filter = command.split('>')[1]
-                    usedOrNegFilter:list = powerMap[hash(action+'>')][0]
-                    usedOrNegFilter.append([filter,functionMap[hash(action+'>')][1]])
-                
-                elif command.__contains__("<"):
-                    action = command.split("<")[0]
-                    filter = command.split('<')[1]
-                    usedOrNegFilter:list = powerMap[hash(action+'<')][0]
-                    usedOrNegFilter.append([filter,functionMap[hash(action+'<')][1]])
-                        
+           
+            if command.__contains__(":"):
+                action = command.split(":")[0]
+                filter = command.split(':')[1]
+                usedOrNegFilter:list = functionMap[hash(action)][0]
+                usedOrNegFilter.append([filter,functionMap[hash(action)][1]])
+            elif command.__contains__(">"):
+                action = command.split(">")[0]
+                filter = command.split('>')[1]
+                usedOrNegFilter:list = powerMap[hash(action+'>')][0]
+                usedOrNegFilter.append([filter,functionMap[hash(action+'>')][1]])
+            
+            elif command.__contains__("<"):
+                action = command.split("<")[0]
+                filter = command.split('<')[1]
+                usedOrNegFilter:list = powerMap[hash(action+'<')][0]
+                usedOrNegFilter.append([filter,functionMap[hash(action+'<')][1]])
+                    
             else:
-                print('test')
-                usedFunctions.append([command,  Regex.nameFunc])
+                usedFunctions.append([command,Regex.nameFunc])
 
         match = []
         for card in db:
