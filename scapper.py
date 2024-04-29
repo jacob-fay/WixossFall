@@ -14,7 +14,7 @@ def jpGrapCard(set: str,cardnum: str):
 
      print(text)
 def grabCardsbySet(set:str, cardNum: str):
-    cardtextBase = 'https://www.takaratomy.co.jp/products/en.wixoss/card/itemsearch.php?card_no=WXDi-D'
+    cardtextBase = 'https://www.takaratomy.co.jp/products/en.wixoss/card/itemsearch.php?card_no=WXDi-P'
     cardImageBase = 'https://www.takaratomy.co.jp/products/en.wixoss/card/thumb/WXDi-P'
     text = requests.get(f'{cardtextBase}{set}-{cardNum}[EN]')
     dic:dict = json.loads(text.text)
