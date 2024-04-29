@@ -58,6 +58,18 @@ class Regex:
             if filter.lower() == color.lower():
                 return True
         return False
+    def levelGreater(filter:str,card:Card):
+        '''Returns true if the filter is lower then the cards level\n
+            Returns false if the card is not a signi, lrig, or assist'''
+        if type(card) != Signi and type(card) != Lrig and type(card) != Assist:
+            return False
+        return card.level > int(filter)
+    def levelLower(filter:str,card:Card):
+        '''Returns true if the filter is higher then the cards level\n
+            Returns false if the card is not a signi, lrig, or assist'''
+        if type(card) != Signi and type(card) != Lrig and type(card) != Assist:
+            return False
+        return card.level < int(filter)
     def registerFunc(command:str,splitter:str,functionMap:dict):
         '''Takes a command and then adds that command to the corrasponding list defined by the functionMap'''
         action = command.split(splitter)[0]
@@ -84,31 +96,39 @@ class Regex:
         functionMap[hash('has:')] = [usedFunctions,Regex.lifeburstFunc]
         functionMap[hash('-has:')] = [usedNegitivefilter,Regex.lifeburstFunc]
         functionMap[hash('power>')] = [usedFunctions,Regex.powerGreaterFunc]
-        functionMap[hash('power<')] = [usedFunctions,Regex.powerGreaterFunc]
-        functionMap[hash('power>')] = [usedNegitivefilter,Regex.powerLesserFunc]
-        functionMap[hash('power<')] = [usedNegitivefilter,Regex.powerLesserFunc]
-        functionMap[hash('power=')] = [usedFunctions,Regex.powerGreaterFunc]
-        functionMap[hash('power=')] = [usedNegitivefilter,Regex.powerLesserFunc]
+        functionMap[hash('-power<')] = [usedNegitivefilter,Regex.powerLesserFunc]
+        functionMap[hash('-power>')] = [usedNegitivefilter,Regex.powerGreaterFunc]
+        functionMap[hash('power<')] = [usedFunctions,Regex.powerLesserFunc]
+        functionMap[hash('power=')] = [usedFunctions,Regex.powerEqual]
+        functionMap[hash('-power=')] = [usedNegitivefilter,Regex.powerEqual]
+        functionMap[hash('level>')] = [usedFunctions,Regex.levelGreater]
+        functionMap[hash('-level>')] = [usedNegitivefilter,Regex.levelGreater]
+        functionMap[hash('level<')] = [usedFunctions,Regex.levelLower]
+        functionMap[hash('-level<')] = [usedNegitivefilter,Regex.levelLower]
   
 
         for command in space_seperated:
-           
-            if command.__contains__(":"):
-                Regex.registerFunc(command,':',functionMap)
-            elif command.__contains__(">"):
-                Regex.registerFunc(command,'>',functionMap)
-            
-            elif command.__contains__("<"):
-                Regex.registerFunc(command,'<',functionMap)
-            elif command.__contains__("="):
-                Regex.registerFunc(command,'=',functionMap)
+            try:
+                if command.__contains__(":"):
+                    Regex.registerFunc(command,':',functionMap)
+                elif command.__contains__(">"):
+                    Regex.registerFunc(command,'>',functionMap)
+                
+                elif command.__contains__("<"):
+                    Regex.registerFunc(command,'<',functionMap)
+                elif command.__contains__("="):
+                    Regex.registerFunc(command,'=',functionMap)
 
-                    
-            else:
-                usedFunctions.append([command,Regex.nameFunc])
+                        
+                else:
+                    usedFunctions.append([command,Regex.nameFunc])
+            except KeyError as e:
+                return []
 
         match = []
         for card in db:
+            if card.name == 'Anna Mirage, Doomed Evil':
+                print(card)
             mat = True
             card:Card
             for func in usedFunctions:
