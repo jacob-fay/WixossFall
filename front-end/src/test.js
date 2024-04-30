@@ -54,6 +54,7 @@ class Test extends Component {
         this.state.searchQuery = 'RANDOMPLSDONOTGUESSPLS'
         this.fetchData('RANDOMPLSDONOTGUESSPLS')
         this.state.field = ''
+        this.state.offset = 0
     }
     onchange(e){
         this.state.field = e.target

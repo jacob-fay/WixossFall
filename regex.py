@@ -52,7 +52,7 @@ class Regex:
         if type(card) != Signi and type(card) != Spell:
             return False
         return card.lifeburst != ""
-    def costEqualFunc(filter:str,card:Card):
+    def colorEqualFunc(filter:str,card:Card):
         '''Returns true if the filter is contained within the cards color'''
         for color in card.color:
             if filter.lower() == color.lower():
@@ -105,6 +105,8 @@ class Regex:
         functionMap[hash('-level>')] = [usedNegitivefilter,Regex.levelGreater]
         functionMap[hash('level<')] = [usedFunctions,Regex.levelLower]
         functionMap[hash('-level<')] = [usedNegitivefilter,Regex.levelLower]
+        functionMap[hash('color:')] = [usedFunctions,Regex.colorEqualFunc]
+        functionMap[hash('color:')] = [usedNegitivefilter,Regex.colorEqualFunc]
   
 
         for command in space_seperated:
