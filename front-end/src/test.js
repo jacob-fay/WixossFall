@@ -8,6 +8,7 @@ class Test extends Component {
 
     fetchData = async (name) => {
         try {
+            console.log('129.21.67.19:5000/test/' + name + '/' + this.state.offset)
             const url = new URL('129.21.67.19:5000/test/' + name + '/' + this.state.offset);
             const response = await fetch(url, {
                 method: 'GET',
