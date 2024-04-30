@@ -11,4 +11,5 @@ if __name__ == '__main__':
     
     print("Loading db")
     print("Starting flask")
-    app.run(debug=True), #starts Flask
+    app.run(debug=True,host='129.21.67.19',port=5000), #starts Flask
+    
