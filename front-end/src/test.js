@@ -8,9 +8,7 @@ class Test extends Component {
 
     fetchData = async (name) => {
         try {
-            console.log('129.21.67.19:5000/test/' + name + '/' + this.state.offset)
-            const url = new URL('129.21.67.19:5000/test/' + name + '/' + this.state.offset);
-            const response = await fetch(url, {
+            const response = await fetch('http://localhost:5000/test/' + name + '/' + this.state.offset, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -23,6 +21,7 @@ class Test extends Component {
             console.log(error);
         }
     }
+    
     componentDidMount() {
         this.state.searchQuery = 'RANDOMPLSDONOTGUESSPLS'
         this.state.offset = 0
@@ -68,7 +67,7 @@ class Test extends Component {
                 <div class="card">
                     {this.state.cards.length > 0 ? (
                         this.state.cards.map(item => (
-                            <img css="width=50px" src={item}></img>
+                            <img css="width=50px" src={'http://localhost:5000/cardart/' + item}></img>
                         ))
                     ) : (
                         <h2><a>Nothing matching these description</a></h2>

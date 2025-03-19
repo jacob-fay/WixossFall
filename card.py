@@ -93,7 +93,7 @@ class Lrig(Card):
         self.level = level
         self.cost = cost
     def __str__(self):
-        return f'{super().__str__()}\n{self.cost}\nlevel: {self.level}\n{self.cost}'
+        return f'{super().__str__()}\n{self.cost}\nlevel: {self.level}\n'
     
 class Assist(Card):
     def __init__(self, id: int, set: Set, name: str, color, cardType: CardType, artist: str, textBox: str,limit:int,level:int,cost:Cost,timing: Timing,image:str) -> None:

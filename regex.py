@@ -106,7 +106,7 @@ class Regex:
         functionMap[hash('level<')] = [usedFunctions,Regex.levelLower]
         functionMap[hash('-level<')] = [usedNegitivefilter,Regex.levelLower]
         functionMap[hash('color:')] = [usedFunctions,Regex.colorEqualFunc]
-        functionMap[hash('color:')] = [usedNegitivefilter,Regex.colorEqualFunc]
+        functionMap[hash('-color:')] = [usedNegitivefilter,Regex.colorEqualFunc]
   
 
         for command in space_seperated:
@@ -129,8 +129,6 @@ class Regex:
 
         match = []
         for card in db:
-            if card.name == 'Anna Mirage, Doomed Evil':
-                print(card)
             mat = True
             card:Card
             for func in usedFunctions:

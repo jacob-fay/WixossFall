@@ -1,147 +1,34 @@
+import xml.etree
+import xml.etree.ElementTree
+import xml.parsers
 from card import *
 import json
+import xml
 class db:
     __slots__ = ('allCards')
     def __init__(self) -> None:
         self.allCards = db.createallCards()
     def costConverter(string:str) -> Cost:
-        #very bad pracitice don't feel like doing a converter
-        match string:
-            case '\u300aW\u300b\u00d7\uff12\n\u300aC\u300b\u00d7\uff13':
-                return Cost(3,2,0,0,0,0)
-            case '\u300aB\u300b\u00d7\uff12\n\u300aC\u300b\u00d7\uff12':
-                return Cost(2,0,2,0,0,0)
-            case '':
-                return  Cost(0,0,0,0,0,0)
-            case '\u300aC\u300b\u00d7\uff10':
-                return Cost(0,0,0,0,0,0) #0 colorless
-            case '\u300aC\u300b\u00d7\uff11':
-                return Cost(1,0,0,0,0,0) #0 colorless
-            case '\u300aC\u300b\u00d7\uff12':
-                return Cost(2,0,0,0,0,0) #2 colorless
-            case '\u300aC\u300b\u00d7\uff13':
-                return Cost(3,0,0,0,0,0) #3 colorless
-            case '\u300aC\u300b\u00d7\uff14':
-                return Cost(4,0,0,0,0,0) #4 colorless
-            case '\u300aC\u300b\u00d7\uff15':
-                return Cost(5,0,0,0,0,0) #5 colorless
-            case '\u300aC\u300b\u00d7\uff16':
-                return Cost(6,0,0,0,0,0) #6 colorless
-            case '\u300aC\u300b\u00d7\uff17':
-                return Cost(7,0,0,0,0,0) #7 colorless
-            case '\u300aC\u300b\u00d7\uff18':
-                return Cost(8,0,0,0,0,0) #8 colorless
-            
-            case '\u300aW\u300b\u00d7\uff11\r\n\u300aC\u300b\u00d7\uff12':
-                return Cost(2,1,0,0,0,0)
-            case '\u300aG\u300b\u00d7\uff11\r\n\u300aC\u300b\u00d7\uff12':
-                return Cost(2,0,0,1,0,0)
-            case '\u300aW\u300b\u00d7\uff10':
-                return Cost(0,0,0,0,0,0) #0 white
-            case '\u300aW\u300b\u00d7\uff11':
-                return Cost(1,0,0,0,0,0) #1 white
-            case '\u300aW\u300b\u00d71':
-                return Cost(1,0,0,0,0,0) #1 white
-            case '\u300aW\u300b\u00d7\uff12':
-                return Cost(2,0,0,0,0,0) #2 white
-            case '\u300aW\u300b\u00d7\uff13':
-                return Cost(3,0,0,0,0,0) #3 white
-            
-            case '\u300aG\u300b\u00d7\uff10':
-                return Cost(0,0,0,0,0,0) #0 white
-            case '\u300aG\u300b\u00d7\uff11':
-                return Cost(1,0,0,0,0,0) #1 white
-            case '\u300aG\u300b\u00d71':
-                return Cost(1,0,0,0,0,0) #1 white
-            case '\u300aG\u300b\u00d7\uff12':
-                return Cost(2,0,0,0,0,0) #2 white
-            case '\u300aG\u300b\u00d7\uff13':
-                return Cost(3,0,0,0,0,0) #3 white
-            
-            
-            
-            
-            case '\u300aB\u300b\u00d7\uff10':
-                return Cost(0,0,0,0,0,0) #1 black
-            case '\u300aB\u300b\u00d7\uff11':
-                return Cost(0,0,1,0,0,0) #1 black
-            case '\u300aB\u300b\u00d7\uff12':
-                return Cost(0,0,2,0,0,0) #1 black
-            case '\u300aB\u300b\u00d7\uff13':
-                return Cost(0,0,3,0,0,0) #1 black
-            case '\u300aB\u300b\u00d7\uff12\r\n\u300aC\u300b\u00d7\uff11':
-                return Cost(1,0,2,0,0,0)
-
-
-
-
-
-            case '\u300aR\u300b\u00d7\uff10':
-                return Cost(0,0,0,0,0,0) #0 red
-            case '\u300aR\u300b\u00d7\uff11':
-                return Cost(1,0,0,0,0,0) #0 red
-            case '\u300aR\u300b\u00d7\uff12':
-                return Cost(2,0,0,0,0,0) #2 red
-            case '\u300aR\u300b\u00d7\uff13':
-                return Cost(3,0,0,0,0,0) #3 red
-            case '\u300aR\u300b\u00d7\uff14':
-                return Cost(4,0,0,0,0,0) #4 red
-            case '\u300aR\u300b\u00d7\uff15':
-                return Cost(5,0,0,0,0,0) #5 red
-            case '\u300aR\u300b\u00d7\uff16':
-                return Cost(6,0,0,0,0,0) #6 red
-            case '\u300aR\u300b\u00d7\uff17':
-                return Cost(7,0,0,0,0,0) #7 red
-            case '\u300aR\u300b\u00d7\uff18':
-                return Cost(8,0,0,0,0,0) #8 red
-            
-            case '\u300aU\u300b\u00d7\uff10':
-                return Cost(0,0,0,0,0,0) #0 blue
-            case '\u300aU\u300b\u00d7\uff11':
-                return Cost(1,0,0,0,0,0) #1 blue
-            case '\u300aU\u300b\u00d7\uff12':
-                return Cost(2,0,0,0,0,0) #2 blue
-            case '\u300aU\u300b\u00d7\uff13':
-                return Cost(3,0,0,0,0,0) #3 blue
-            case '\u300aU\u300b\u00d7\uff11\r\n\u300aC\u300b\u00d7\uff11':
-                return Cost(1,0,0,0,0,1)
-            case '\u300aG\u300b\u00d7\uff11\r\n\u300aC\u300b\u00d7\uff11':
-                return Cost(1,0,0,1,0,0)
-            case '\u300aB\u300b\u00d7\uff11\r\n\u300aC\u300b\u00d7\uff11':
-                return Cost(1,0,1,0,0,0)
-            case '\u300aG\u300b\u00d7\uff11\r\n\u300aC\u300b\u00d7\uff11':
-                return Cost(1,0,0,1,0,0)
-            case '\u300aW\u300b\u00d7\uff11\r\n\u300aU\u300b\u00d7\uff11\r\n\u300aC\u300b\u00d7\uff11':
-                return Cost(1,1,0,0,0,1)
-            case '\u300aR\u300b\u00d7\uff11\r\n\u300aW\u300b\u00d7\uff11\r\n\u300aC\u300b\u00d7\uff11':
-                return Cost(1,1,0,0,1,0)
-            case '\u300aU\u300b\u00d7\uff11\r\n\u300aB\u300b\u00d7\uff11':
-                return Cost(0,0,1,0,0,1)
-            case '\u300aG\u300b\u00d7\uff11\r\n\u300aW\u300b\u00d7\uff11\r\n\u300aC\u300b\u00d7\uff11':
-                return Cost(1,1,0,1,0,0)
-            case '\u300aB\u300b\u00d7\uff11\r\n\u300aG\u300b\u00d7\uff11':
-                return Cost(0,0,1,1,0,0)
-            case '\u300aW\u300b\u00d7\uff11\r\n\u300aB\u300b\u00d7\uff11':
-                return Cost(0,1,1,0,0,0)
-            case '\u300aR\u300b\u00d7\uff11\n\u300aC\u300b\u00d7\uff11':
-                return Cost(1,0,0,0,1,0)
-            case '\u300aW\u300b\u00d7\uff11\n\u300aC\u300b\u00d7\uff11':
-                return Cost(1,1,0,0,0,0)
-            case '\u300aB\u300b\u00d7\uff11\r\n\u300aC\u300b\u00d7\uff12':
-                return Cost(2,0,1,0,0,0)
-            case '\u300aW\u300b\u00d7\uff12\r\n\u300aC\u300b\u00d7\uff11':
-                return Cost(2,1,0,0,0,0)
-            case '\u306f\u3057\u3082\u3068\u306a\u304a\u3084':
-                return Cost(1,0,0,0,0,0)
-            case '\u300aR\u300b\u00d7\uff11\r\n\u300aC\u300b\u00d7\uff11':
-                return Cost(1,0,0,0,1,0)
-            case '\u300aW\u300b\u00d7\uff11\r\n\u300aC\u300b\u00d7\uff11':
-                return Cost(1,1,0,0,0,0)
-            case '\u300aB\u300b\u00d71':
-                return Cost(0,0,2,0,0,0)
-            case '\u300aR\u300b\u00d7\uff11\r\n\u300aB\u300b\u00d7\uff11':
-                return Cost(0,0,1,0,1,0)
-        raise ValueError(f"Cost code: '{string}' is not implemented")
+        if string is None:
+            return Cost(0,0,0,0,0,0)
+        elif (len(string) == 4 and string.find('-') != -1):
+            return Cost(int(string[0]),0,0,0,0,0)
+        try: 
+            cost = string.split('- ')[1]
+        except IndexError:
+            cost = string
+        black = cost.count('B')
+        blue = cost.count('U')
+        white = cost.count('W')
+        green = cost.count('G')
+        red = cost.count('R')
+        colorless = cost[0]
+        try:
+            colorless = int(colorless)
+            return Cost(colorless,white,black,green,red,blue)
+        except:
+            return Cost(0,white,black,green,red,blue)
+        
             
             
         
@@ -172,19 +59,19 @@ class db:
         if string.__contains__('R'):
             colorList.append(Color.red)
         if string.__contains__('G'):
-            colorList.append(Color.blue)
+            colorList.append(Color.green)
         return colorList
     def limitConverter(string:str):
         match string:
             case '+ 1':
                 return 1
     def cardParser(card:dict) -> Card:
-        int = card["ID"]
+        int = 'none'
         name = card["name"]
-        cardText = card["content"]
-        artist = card["artist"]
-        set = card["product_type"]
-        color =  db.colorConverter(card["color"])
+        cardText = card["text"]
+        artist = 'none'
+        set = card["set"]
+        color =  'none'
         image = card['image']
         subtype = ''
        
@@ -199,16 +86,28 @@ class db:
     def pieceParser(card:dict) -> Piece:
         cardparsed = db.cardParser(card)
         cardparsed:Card
-        cost = db.costConverter(card["cost"])
-        timing = db.timeConverter(card["guard_coin_timing"])
+        cost = db.costConverter(card["manacost"])
+        try:
+            timing = db.timeConverter(card['text'].split('se Timing [')[1].split(']')[0])
+        except IndexError:
+            try:
+                timing = db.timeConverter(card['text'].split('se Timing: [')[1].split(']')[0])
+            except:
+                timing = Timing.main
+       
         return Piece(cardparsed.id,cardparsed.set,cardparsed.name,cardparsed.color,CardType.piece,cardparsed.artist,cardparsed.textBox,cost,timing,cardparsed.image)
 
     def signiParser(card:dict):
         cardparsed = db.cardParser(card)
-        power = card["power"]
-        level = int(card["level"])
-        lifeburst = card['power_text']
-        clas = card['LRIG_SIGNI_type']
+        power = card["pt"]
+        level = int(card["cmc"])
+        burst:str = card['type']
+        if 'SIGNI|LB' in burst:
+            lifeburst = card['text'].split('[Life Burst]:')[0]
+            lifeburst = card['text'].split('[Life Burst]:')[1]
+        else:
+            lifeburst = None
+        clas = card['type'].split('- ')[1]
         return Signi(cardparsed.id,cardparsed.set,cardparsed.name,cardparsed.color,CardType.signi,cardparsed.artist,cardparsed.textBox,power,lifeburst,level,cardparsed.image,clas,cardparsed.subtype)
     def assistParser(card:dict):
         cardparsed = db.cardParser(card)
@@ -219,44 +118,69 @@ class db:
         return Assist(cardparsed.id,cardparsed.set,cardparsed.name,cardparsed.color,CardType.assist,cardparsed.artist,cardparsed.textBox,limit,level,cost,timing,cardparsed.image)
     def lrigParser(card:dict):
         cardparsed = db.cardParser(card)
-        cost = db.costConverter(card["cost"])
-        limit = db.limitConverter(card['limits'])
-        level = int(card['level'])
+        cost = db.costConverter(card["manacost"])
+        limit = db.limitConverter(card['loyalty'])
+        level = int(card['cmc'])
         return Lrig(cardparsed.id,cardparsed.set,cardparsed.name,cardparsed.color,CardType.lrig,cardparsed.artist,cardparsed.textBox,limit,level,cost,cardparsed.image)
     def spellParser(card:dict):
         cardparsed = db.cardParser(card)
-        cost = db.costConverter(card["cost"])
-        lifeburst = card['power_text']
+        cost = db.costConverter(card["manacost"])
+        lifeburst = None
         return Spell(cardparsed.id,cardparsed.set,cardparsed.name,cardparsed.color,CardType.spell,cardparsed.artist,cardparsed.textBox,cost,cardparsed.image,cardparsed.subtype,lifeburst)
 
 
 
 
 
-    def createallCards(allCards:list = '') -> list:
-        if (allCards == ''):
-            allCards = []
-        allCards:list
-        namesUsed:set = set()
-        with open('sample.json','r') as file:
+    def createallCards() -> list:
+        
+        allCards = list() 
+        tree = xml.etree.ElementTree.parse('Wixoss TCG.xml')
+        
+        for card in tree.getroot().find('cards').findall('card'):
+            tag_to_val = dict()
+            for tag in card.find('prop'):
+                    tag_to_val[tag.tag] =  tag.text
+            for tag in card:
+                
+              
+                tag_to_val[tag.tag] =  tag.text
+                
+               
             
-            jFile = json.load(file)
-            for index,card in enumerate(jFile):
-                if (card["name"] in namesUsed):
-                    continue
-                namesUsed.add(card["name"])
-                type = card['card_type']
+                
+            try:    
+                type = tag_to_val['maintype']
+            except KeyError:
+                tag_to_val['token']
+                continue
+            image_urls = [set_elem.attrib['picURL'] for set_elem in card.findall("set") if 'picURL' in set_elem.attrib]
+            for pic in image_urls:
+
+                #tag_to_val['image'] = card.find('set').attrib.get('picURL').split('/')[-1]
+                tag_to_val['image'] = pic.split('/')[-1]
+
                 match type:
                     case "PIECE":
-                        allCards.append(db.pieceParser(card))
-                    case "ASSIST LRIG":
-                        allCards.append(db.assistParser(card))
+                        allCards.append(db.pieceParser(tag_to_val))
+                    case "LRIG|ASSIST":
+                        allCards.append(db.assistParser(tag_to_val))
                     case "SPELL":
-                        allCards.append(db.spellParser(card))
+                        allCards.append(db.spellParser(tag_to_val))
                     case "SIGNI":
-                        allCards.append(db.signiParser(card))
+                        allCards.append(db.signiParser(tag_to_val))
                     case "LRIG":
-                        allCards.append(db.lrigParser(card))
+                        allCards.append(db.lrigParser(tag_to_val))
+                    case "RESONA":
+                        pass
+                    case "ART":
+                        pass
+                
+                 
+            
+
+            
+          
                     
 
         return allCards
