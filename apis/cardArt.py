@@ -24,11 +24,21 @@ class Cardart(Resource):
             img_data = requests.get(url).content
             with open(f'cards/{name}', 'wb') as handler:
                 handler.write(img_data)
+    
+    def downloadImageTetrus(self,name):
+            '''https://raw.githubusercontent.com/TetrusAO/Wixoss-TCG-Cockatrice-Plugin/master/pics/CUSTOM/Tawil%20(WX12).jpeg'''
+            url = f'''https://raw.githubusercontent.com/TetrusAO/Wixoss-TCG-Cockatrice-Plugin/master/pics/CUSTOM/{name}'''
+            img_data = requests.get(url).content
+            with open(f'cards/{name}', 'wb') as handler:
+                handler.write(img_data)
     def get(self,name):
         if isfile(f'cards/{name}'):
             return send_from_directory('cards',name)
-        if  name.find('[EN]') == -1:
-            self.downloadImageJP(name)
-        elif name.find('[EN]'):
+      
+        if '[EN]' in name:
             self.downloadImageEN(name)
+        elif '(' in  name:
+             self.downloadImageTetrus(name)
+        else:
+             self.downloadImageJP(name)
         return send_from_directory('cards',name)
