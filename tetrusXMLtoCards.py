@@ -44,8 +44,33 @@ class db:
                 return Timing.main_spell
             case "Main Phase\nAttack Phase":
                 return Timing.main_attack
+            
         raise Exception("Error reading play timing: "+repr(string))
-
+    def artsTimeConverter(string: str) -> Timing:
+        if string ==  'When a SIGNI on your field is about to be vanished Cut-In':
+            return Timing.other
+        if string.find('Main Phase') != -1: 
+            if string.find('Attack Phase') != -1:
+                if string.find('Spell Cut-In') != -1:
+                    return Timing.main_attack_spell
+                else:
+                    return Timing.main_attack
+            else:
+                if string.find('Spell Cut-In') != -1:
+                    return Timing.main_spell
+                return Timing.main
+        else:
+            if string.find('Attack Phase') != -1:
+                if string.find('Spell Cut-In') != -1:
+                    return Timing.attack_spell
+                else:
+                    return Timing.attack
+            else:
+                if string.find('Spell Cut-In') != -1:
+                    return Timing.spell
+                else:
+                    raise Exception("Error reading Art timing: "+repr(string))
+            
     def colorConverter(string:str) -> list:
         colorList:list = []
         if string.__contains__('W'):
@@ -96,7 +121,31 @@ class db:
                 timing = Timing.main
        
         return Piece(cardparsed.id,cardparsed.set,cardparsed.name,cardparsed.color,CardType.piece,cardparsed.artist,cardparsed.textBox,cost,timing,cardparsed.image)
-
+    def artParser(card:dict) -> Piece:
+        cardparsed = db.cardParser(card)
+        cardparsed:Card
+        cost = db.costConverter(card["manacost"])
+        try:
+            timing = db.artsTimeConverter(card['text'].split('se Timing [')[1].split(']')[0])
+        except IndexError:
+            try:
+                timing = db.artsTimeConverter(card['text'].split('se Timing: [')[1].split(']')[0])
+            except:
+                timing = Timing.main
+       
+        return Art(cardparsed.id,cardparsed.set,cardparsed.name,cardparsed.color,CardType.piece,cardparsed.artist,cardparsed.textBox,cost,timing,cardparsed.image)
+    def resonaParser(card:dict):
+        cardparsed = db.cardParser(card)
+        power = card["pt"]
+        level = int(card["cmc"])
+        burst:str = card['type']
+        if 'SIGNI|LB' in burst:
+            lifeburst = card['text'].split('[Life Burst]:')[0]
+            lifeburst = card['text'].split('[Life Burst]:')[1]
+        else:
+            lifeburst = None
+        clas = card['type'].split('- ')[1]
+        return Resona(cardparsed.id,cardparsed.set,cardparsed.name,cardparsed.color,CardType.signi,cardparsed.artist,cardparsed.textBox,power,lifeburst,level,cardparsed.image,clas,cardparsed.subtype)
     def signiParser(card:dict):
         cardparsed = db.cardParser(card)
         power = card["pt"]
@@ -169,12 +218,14 @@ class db:
                         allCards.append(db.spellParser(tag_to_val))
                     case "SIGNI":
                         allCards.append(db.signiParser(tag_to_val))
+                    case "SIGNI|LB":
+                        allCards.append(db.signiParser(tag_to_val))
                     case "LRIG":
                         allCards.append(db.lrigParser(tag_to_val))
                     case "RESONA":
-                        pass
-                    case "ART":
-                        pass
+                        allCards.append(db.resonaParser(tag_to_val))
+                    case "ARTS":
+                        allCards.append(db.artParser(tag_to_val))
                 
                  
             
@@ -187,6 +238,11 @@ class db:
 
 if (__name__ == "__main__"):
    l = db.createallCards()
+   import json
+#    with open('car.txt', 'a', encoding="utf-8") as t:
+#             for card in l:
+#                 card:Card
+#                 t.write(str(card.name))
    l:list
    print(l.__len__())
     

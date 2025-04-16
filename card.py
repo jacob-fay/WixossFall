@@ -4,6 +4,9 @@ class Timing:
     spell = 'spell'
     main_attack = 'main/attack'
     main_spell = 'main/spell'
+    main_attack_spell = 'main/attack/spell'
+    attack_spell = 'attack/spell'
+    other = 'other'
 class Color:
     blue = 'blue'
     green = 'green'
@@ -66,8 +69,21 @@ class Signi(Card):
         self.clas = clas
     def __str__(self):
         return f'{super().__str__()}\nLevel: {self.level}\nBurst: {self.lifeburst}\nPower: {self.power}'
+class Resona(Signi):
+    def __init__(self, id, set, name, color, cardType, artist, textBox, power, lifeburst, level, image, clas, subtype):
+        super().__init__(id, set, name, color, cardType, artist, textBox, power, lifeburst, level, image, clas, subtype)
+    def __str__(self):
+        return f'{super().__str__()}\nLevel: {self.level}\nBurst: {self.lifeburst}\nPower: {self.power}'
 
 class Piece(Card):
+    __slots__ = ('cost','timing')
+    def __init__(self, id: int, set: Set, name: str, color: list, cardType: CardType, artist: str,textBox:str,cost:Cost,timing: Timing.main,image:str) -> None:
+        super().__init__(id, set, name, color, cardType, artist,textBox,image,'')
+        self.cost = cost
+        self.timing = timing
+    def __str__(self):
+        return f'{super().__str__()}\n{self.cost}\nUse timing: {self.timing}'
+class Art(Card):
     __slots__ = ('cost','timing')
     def __init__(self, id: int, set: Set, name: str, color: list, cardType: CardType, artist: str,textBox:str,cost:Cost,timing: Timing.main,image:str) -> None:
         super().__init__(id, set, name, color, cardType, artist,textBox,image,'')

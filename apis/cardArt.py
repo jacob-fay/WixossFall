@@ -1,10 +1,10 @@
-import jsonToCards as t
+import tetrusXMLtoCards as t
 from flask_restful import Resource
 from flask_restful import request
 from flask_restful import reqparse
 from flask import send_from_directory
 from flask import abort
-from jsonToCards import db
+from tetrusXMLtoCards import db
 from regex import Regex
 from os.path import isfile
 import requests

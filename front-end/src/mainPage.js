@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import './tess.css'
-class Test extends Component {
+import './mainPage.css'
+class MainPage extends Component {
     constructor(props) {
         super(props);
         this.state = { cards: [] }
@@ -94,4 +94,4 @@ class Test extends Component {
         );
     }
 }
-export default Test
+export default MainPage
