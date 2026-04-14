@@ -5,6 +5,36 @@ import { SearchEngine } from './models/SearchEngine';
 
 const PAGE_SIZE = 16;
 
+class CardItem extends Component {
+    constructor(props) {
+        super(props);
+        this.state = { triedFallback: false };
+    }
+
+    handleError = (e) => {
+        if (!this.state.triedFallback) {
+            const fallback = CardDatabase.resolveExternalImageUrl(this.props.imageName);
+            this.setState({ triedFallback: true });
+            e.target.src = fallback;
+        }
+    }
+
+    render() {
+        const { imageName, name } = this.props;
+        const src = CardDatabase.resolveLocalImageUrl(imageName);
+        return (
+            <div className="card-item">
+                <img
+                    src={src}
+                    alt={name}
+                    onError={this.handleError}
+                />
+                <div className="card-item-name">{name}</div>
+            </div>
+        );
+    }
+}
+
 class MainPage extends Component {
     constructor(props) {
         super(props);
@@ -14,6 +44,7 @@ class MainPage extends Component {
             searchQuery: '',
             field: '',
             offset: 0,
+            totalResults: 0,
             loading: true,
             error: null,
         };
@@ -32,11 +63,9 @@ class MainPage extends Component {
 
     _applySearch(query, offset) {
         const { allCards } = this.state;
-        const results = query
-            ? SearchEngine.search(query, allCards)
-            : allCards;
+        const results = query ? SearchEngine.search(query, allCards) : allCards;
         const page = results.slice(offset, offset + PAGE_SIZE);
-        this.setState({ cards: page, offset });
+        this.setState({ cards: page, offset, totalResults: results.length });
     }
 
     handleInputChange = (event) => {
@@ -71,45 +100,113 @@ class MainPage extends Component {
     }
 
     render() {
-        const { cards, offset, loading, error, field } = this.state;
+        const { cards, offset, totalResults, loading, error, field } = this.state;
+        const currentPage = Math.floor(offset / PAGE_SIZE) + 1;
+        const totalPages = Math.ceil(totalResults / PAGE_SIZE);
 
         if (loading) {
-            return <div><h2>Loading card database...</h2></div>;
+            return (
+                <div className="page">
+                    <header className="header">
+                        <div>
+                            <h1 className="header-title">WIXOSS <span>Fall</span></h1>
+                            <p className="header-subtitle">CARD DATABASE</p>
+                        </div>
+                    </header>
+                    <div className="status-message">
+                        <span className="status-icon">⟳</span>
+                        Loading card database…
+                    </div>
+                </div>
+            );
         }
 
         if (error) {
-            return <div><h2>Error loading cards: {error}</h2></div>;
+            return (
+                <div className="page">
+                    <header className="header">
+                        <div>
+                            <h1 className="header-title">WIXOSS <span>Fall</span></h1>
+                            <p className="header-subtitle">CARD DATABASE</p>
+                        </div>
+                    </header>
+                    <div className="status-message">
+                        <span className="status-icon">✕</span>
+                        Error loading cards: {error}
+                    </div>
+                </div>
+            );
         }
 
         return (
-            <div>
-                <input
-                    onChange={this.handleInputChange}
-                    onKeyDown={this._handleKeyDown}
-                    value={field}
-                    type="text"
-                    placeholder="Search.."
-                />
-                <button onClick={this.reset}>reset</button>
-                <div className="card">
-                    {cards.length > 0 ? (
-                        cards.map((card, i) => (
-                            <img
-                                key={card.image + i}
-                                alt={card.name}
-                                src={CardDatabase.resolveImageUrl(card.image)}
-                            />
-                        ))
-                    ) : (
-                        <h2>Nothing matching these description</h2>
-                    )}
-                </div>
+            <div className="page">
+                <header className="header">
+                    <div>
+                        <h1 className="header-title">WIXOSS <span>Fall</span></h1>
+                        <p className="header-subtitle">CARD DATABASE</p>
+                    </div>
+                    <div style={{ color: '#6060a0', fontSize: '0.8rem' }}>
+                        {totalResults.toLocaleString()} card{totalResults !== 1 ? 's' : ''}
+                    </div>
+                </header>
 
-                <button onClick={this.before} disabled={offset <= 0}>Previous</button>
-                <button onClick={this.next} disabled={cards.length < PAGE_SIZE}>Next</button>
+                <div className="search-bar">
+                    <input
+                        className="search-input"
+                        onChange={this.handleInputChange}
+                        onKeyDown={this._handleKeyDown}
+                        value={field}
+                        type="text"
+                        placeholder="Search cards… (press Enter)"
+                    />
+                    <button className="btn btn-secondary" onClick={this.reset}>Reset</button>
+                </div>
+                <p className="search-hint">
+                    Filters: type: · class: · level: · text: · color: · power&gt; · power&lt; · power= · level&gt; · level&lt; · has:lifeburst · is:dissona · prefix&nbsp;- to negate
+                </p>
+
+                {cards.length > 0 ? (
+                    <div className="card-grid">
+                        {cards.map((card, i) => (
+                            <CardItem
+                                key={card.image + i}
+                                imageName={card.image}
+                                name={card.name}
+                            />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="status-message">
+                        <span className="status-icon">🔍</span>
+                        No cards match your search.
+                    </div>
+                )}
+
+                <div className="pagination">
+                    <button
+                        className="btn btn-secondary"
+                        onClick={this.before}
+                        disabled={offset <= 0}
+                    >
+                        ← Previous
+                    </button>
+                    {totalPages > 0 && (
+                        <span className="pagination-info">
+                            Page {currentPage} of {totalPages}
+                        </span>
+                    )}
+                    <button
+                        className="btn btn-primary"
+                        onClick={this.next}
+                        disabled={cards.length < PAGE_SIZE}
+                    >
+                        Next →
+                    </button>
+                </div>
             </div>
         );
     }
 }
 
 export default MainPage;
+

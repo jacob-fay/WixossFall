@@ -252,12 +252,26 @@ export class CardDatabase {
     }
 
     /**
-     * Resolves the display URL for a card image filename.
+     * Returns the local static path for a card image.
+     * Place image files in front-end/public/cards/ to serve them locally.
+     * @param {string} imageName
+     * @returns {string}
+     */
+    static resolveLocalImageUrl(imageName) {
+        if (!imageName) return '';
+        return `${process.env.PUBLIC_URL}/cards/${encodeURIComponent(imageName)}`;
+    }
+
+    /**
+     * Returns the external fallback URL for a card image.
+     * Used as onError fallback when the local image is not available.
      * JP cards:    https://www.takaratomy.co.jp/products/wixoss/img/card/{set}/{name}
      * EN cards:    https://www.takaratomy.co.jp/products/en.wixoss/card/thumb/{name}
      * Custom (Tetrus): https://raw.githubusercontent.com/TetrusAO/Wixoss-TCG-Cockatrice-Plugin/master/pics/CUSTOM/{name}
+     * @param {string} imageName
+     * @returns {string}
      */
-    static resolveImageUrl(imageName) {
+    static resolveExternalImageUrl(imageName) {
         if (!imageName) return '';
         if (imageName.includes('[EN]')) {
             return `https://www.takaratomy.co.jp/products/en.wixoss/card/thumb/${imageName}`;
@@ -267,5 +281,12 @@ export class CardDatabase {
         }
         const setCode = imageName.split('-')[0];
         return `https://www.takaratomy.co.jp/products/wixoss/img/card/${setCode}/${imageName}`;
+    }
+
+    /**
+     * @deprecated Use resolveLocalImageUrl() for src and resolveExternalImageUrl() for onError fallback.
+     */
+    static resolveImageUrl(imageName) {
+        return CardDatabase.resolveLocalImageUrl(imageName);
     }
 }
