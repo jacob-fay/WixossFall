@@ -16,7 +16,7 @@ class Cardart(Resource):
         '''Reject names that could cause path traversal or unexpected URL construction.'''
         safe = basename(name)
         if safe != name or not SAFE_FILENAME_RE.match(name):
-            abort(400)
+            abort(400, 'Invalid filename format')
 
     def downloadImageJP(self,name):
         '''https://www.takaratomy.co.jp/products/wixoss/img/card/SPK02/SPK02-11C.jpg'''
