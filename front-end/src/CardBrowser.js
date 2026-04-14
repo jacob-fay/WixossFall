@@ -68,11 +68,16 @@ class MainPage extends Component {
         // Deduplicate by name, preferring the English card (image contains '[EN]')
         const seen = new Map();
         for (const card of raw) {
-            if (!seen.has(card.name)) {
-                seen.set(card.name, card);
-            } else if (card.image && card.image.includes('[EN]')) {
-                seen.set(card.name, card);
+            let name = card.name;
+            if (name.includes("(")){
+                name = card.name.split("(")[0]
             }
+           
+            if (!seen.has(name)) {
+                seen.set(name, card);
+             }// else if (card.image && card.image.includes('[EN]')) {
+            //     seen.set(card.name, card);
+            // }
         }
         const results = Array.from(seen.values());
         const page = results.slice(offset, offset + PAGE_SIZE);

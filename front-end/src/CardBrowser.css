@@ -63,7 +63,7 @@
 }
 
 .search-input::placeholder {
-    color: #5050788;
+    color: #505078;
 }
 
 .search-input:focus {
@@ -72,7 +72,7 @@
 }
 
 .search-hint {
-    font-size: 0.7rem;
+    font-size: 1.125rem;
     color: #6060a0;
     padding: 4px 32px 16px;
     text-align: center;
