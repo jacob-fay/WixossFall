@@ -1,8 +1,8 @@
 from flask import Flask
 from flask_restful import Resource, Api
 from flask_cors import CORS
-from apis.cardImages import Test
-from apis.cardArt import Cardart
+from apis.card_search_api import Test
+from apis.card_image_api import Cardart
 app = Flask(__name__) #create Flask instance
 CORS(app) #Enable CORS on Flask server to work with Nodejs pages
 api = Api(app) #api router
