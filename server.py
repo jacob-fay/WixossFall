@@ -12,5 +12,5 @@ if __name__ == '__main__':
     
     print("Loading db")
     print("Starting flask")    
-    app.run(debug=True), #starts Flask
+    app.run(debug=False), #starts Flask
 # npm run deploy -- -m "Deploy React app to GitHub Pages"
