@@ -70,7 +70,7 @@ class MainPage extends Component {
         for (const card of raw) {
             let name = card.name;
             if (name.includes("(")){
-                name = card.name.split("(")[0]
+                name = card.name.split(" (")[0]
             }
            
             if (!seen.has(name)) {
