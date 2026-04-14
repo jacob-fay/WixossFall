@@ -5,7 +5,6 @@ from flask_restful import reqparse
 from flask import send_from_directory
 from flask import abort
 from card_xml_parser import db
-from search_engine import Regex
 from os.path import isfile
 import requests
 class Cardart(Resource):
