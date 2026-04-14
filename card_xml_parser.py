@@ -1,7 +1,7 @@
 import xml.etree
 import xml.etree.ElementTree
 import xml.parsers
-from card import *
+from card_models import *
 import json
 import xml
 class db:
@@ -184,7 +184,7 @@ class db:
     def createallCards() -> list:
         
         allCards = list() 
-        tree = xml.etree.ElementTree.parse('Wixoss TCG.xml')
+        tree = xml.etree.ElementTree.parse('wixoss-tcg.xml')
         
         for card in tree.getroot().find('cards').findall('card'):
             tag_to_val = dict()

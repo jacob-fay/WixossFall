@@ -1,4 +1,4 @@
-from card import *
+from card_models import *
 class Regex:
     def typeFunc(filter,card:Card):
         '''Returns true if the filter matches the card type of the card'''

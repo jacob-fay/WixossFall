@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './mainPage.css';
+import './CardBrowser.css';
 import { CardDatabase } from './models/CardDatabase';
 import { SearchEngine } from './models/SearchEngine';
 

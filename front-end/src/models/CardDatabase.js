@@ -167,13 +167,13 @@ export class CardDatabase {
     }
 
     /**
-     * Fetches and parses the tetrus.xml file, returning a CardDatabase instance.
-     * Update public/tetrus.xml to add new cards.
-     * @param {string} xmlUrl - URL to the tetrus XML file (default: process.env.PUBLIC_URL + '/tetrus.xml')
+     * Fetches and parses the card-database.xml file, returning a CardDatabase instance.
+     * Update public/card-database.xml to add new cards.
+     * @param {string} xmlUrl - URL to the card database XML file (default: process.env.PUBLIC_URL + '/card-database.xml')
      * @returns {Promise<CardDatabase>}
      */
     static async load(xmlUrl) {
-        const url = xmlUrl || `${process.env.PUBLIC_URL}/tetrus.xml`;
+        const url = xmlUrl || `${process.env.PUBLIC_URL}/card-database.xml`;
         const response = await fetch(url);
         if (!response.ok) throw new Error(`Failed to fetch card database: ${response.statusText}`);
         const text = await response.text();
