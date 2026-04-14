@@ -64,7 +64,17 @@ class MainPage extends Component {
 
     _applySearch(query, offset) {
         const { allCards } = this.state;
-        const results = query ? SearchEngine.search(query, allCards) : allCards;
+        const raw = query ? SearchEngine.search(query, allCards) : allCards;
+        // Deduplicate by name, preferring the English card (image contains '[EN]')
+        const seen = new Map();
+        for (const card of raw) {
+            if (!seen.has(card.name)) {
+                seen.set(card.name, card);
+            } else if (card.image && card.image.includes('[EN]')) {
+                seen.set(card.name, card);
+            }
+        }
+        const results = Array.from(seen.values());
         const page = results.slice(offset, offset + PAGE_SIZE);
         this.setState({ cards: page, offset, totalResults: results.length });
     }
