@@ -1,10 +1,10 @@
-import { Signi, Spell, Lrig, Assist, Piece } from './Card';
+import { Signi, Spell, Lrig, Assist, Piece, Art } from './Card';
 
 export class SearchEngine {
     // --- Filter predicates ---
 
     static typeFunc(filter, card) {
-        const typeMap = { signi: Signi, spell: Spell, lrig: Lrig, assist: Assist, piece: Piece };
+        const typeMap = { signi: Signi, spell: Spell, lrig: Lrig, assist: Assist, piece: Piece, art: Art };
         return typeMap[filter.toLowerCase()] && card instanceof typeMap[filter.toLowerCase()];
     }
 
