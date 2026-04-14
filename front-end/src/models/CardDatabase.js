@@ -80,11 +80,22 @@ export class CardDatabase {
         const cardText = card['text'] || '';
         const set = card['set'];
         const image = card['image'];
-        let subtype = '';
-        try {
-            subtype = card['subtype'] || '';
-        } catch {}
-        return new Card('none', set, name, 'none', CardType.piece, 'none', cardText, image, subtype);
+        let subtype = card['subtype'] || '';
+        if (!subtype && card['type']) {
+            const parts = card['type'].split('- ');
+            if (parts.length > 1) subtype = parts.slice(1).join('- ');
+        }
+        const base = new Card('none', set, name, 'none', CardType.piece, 'none', cardText, image, subtype);
+        base.formats = CardDatabase._parseFormats(card);
+        return base;
+    }
+
+    static _parseFormats(card) {
+        const formats = new Set();
+        if (card['format-allstar'] === 'legal') formats.add('as');
+        if (card['format-key'] === 'legal') formats.add('key');
+        if (card['format-diva'] === 'legal') formats.add('diva');
+        return formats;
     }
 
     static pieceParser(card) {
@@ -98,7 +109,9 @@ export class CardDatabase {
                 timing = CardDatabase.timeConverter(card['text'].split('se Timing: [')[1].split(']')[0]);
             } catch {}
         }
-        return new Piece(base.id, base.set, base.name, base.color, CardType.piece, base.artist, base.textBox, cost, timing, base.image);
+        const result = new Piece(base.id, base.set, base.name, base.color, CardType.piece, base.artist, base.textBox, cost, timing, base.image);
+        result.formats = base.formats;
+        return result;
     }
 
     static artParser(card) {
@@ -112,7 +125,9 @@ export class CardDatabase {
                 timing = CardDatabase.artsTimeConverter(card['text'].split('se Timing: [')[1].split(']')[0]);
             } catch {}
         }
-        return new Art(base.id, base.set, base.name, base.color, CardType.piece, base.artist, base.textBox, cost, timing, base.image);
+        const result = new Art(base.id, base.set, base.name, base.color, CardType.piece, base.artist, base.textBox, cost, timing, base.image);
+        result.formats = base.formats;
+        return result;
     }
 
     static resonaParser(card) {
@@ -126,7 +141,9 @@ export class CardDatabase {
             lifeburst = parts.length > 1 ? parts[1] : null;
         }
         const clas = card['type'] ? card['type'].split('- ')[1] : '';
-        return new Resona(base.id, base.set, base.name, base.color, CardType.signi, base.artist, base.textBox, power, lifeburst, level, base.image, clas, base.subtype);
+        const result = new Resona(base.id, base.set, base.name, base.color, CardType.signi, base.artist, base.textBox, power, lifeburst, level, base.image, clas, base.subtype);
+        result.formats = base.formats;
+        return result;
     }
 
     static signiParser(card) {
@@ -140,7 +157,9 @@ export class CardDatabase {
             lifeburst = parts.length > 1 ? parts[1] : null;
         }
         const clas = card['type'] ? card['type'].split('- ')[1] : '';
-        return new Signi(base.id, base.set, base.name, base.color, CardType.signi, base.artist, base.textBox, power, lifeburst, level, base.image, clas, base.subtype);
+        const result = new Signi(base.id, base.set, base.name, base.color, CardType.signi, base.artist, base.textBox, power, lifeburst, level, base.image, clas, base.subtype);
+        result.formats = base.formats;
+        return result;
     }
 
     static assistParser(card) {
@@ -149,7 +168,9 @@ export class CardDatabase {
         const timing = CardDatabase.timeConverter(card['guard_coin_timing']);
         const limit = CardDatabase.limitConverter(card['limits']);
         const level = parseInt(card['level']);
-        return new Assist(base.id, base.set, base.name, base.color, CardType.assist, base.artist, base.textBox, limit, level, cost, timing, base.image);
+        const result = new Assist(base.id, base.set, base.name, base.color, CardType.assist, base.artist, base.textBox, limit, level, cost, timing, base.image);
+        result.formats = base.formats;
+        return result;
     }
 
     static lrigParser(card) {
@@ -157,13 +178,17 @@ export class CardDatabase {
         const cost = CardDatabase.costConverter(card['manacost']);
         const limit = CardDatabase.limitConverter(card['loyalty']);
         const level = parseInt(card['cmc']);
-        return new Lrig(base.id, base.set, base.name, base.color, CardType.lrig, base.artist, base.textBox, limit, level, cost, base.image);
+        const result = new Lrig(base.id, base.set, base.name, base.color, CardType.lrig, base.artist, base.textBox, limit, level, cost, base.image);
+        result.formats = base.formats;
+        return result;
     }
 
     static spellParser(card) {
         const base = CardDatabase.cardParser(card);
         const cost = CardDatabase.costConverter(card['manacost']);
-        return new Spell(base.id, base.set, base.name, base.color, CardType.spell, base.artist, base.textBox, cost, base.image, base.subtype, null);
+        const result = new Spell(base.id, base.set, base.name, base.color, CardType.spell, base.artist, base.textBox, cost, base.image, base.subtype, null);
+        result.formats = base.formats;
+        return result;
     }
 
     /**
