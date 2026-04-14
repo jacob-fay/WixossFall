@@ -7,18 +7,18 @@ class SearchEngine:
     def typeFunc(filter, card: Card):
         '''Returns true if the filter matches the card type of the card'''
         typeMap = {'signi': Signi, 'spell': Spell, 'lrig': Lrig, 'assist': Assist, 'piece': Piece}
-        return typeMap.get(filter) == type(card)
+        return typeMap.get(filter.lower()) == type(card)
 
     def nameFunc(filter, card: Card):
-        '''Returns true if the filter is contained inside the cards name'''
-        return filter in card.name
+        '''Returns true if the filter is contained inside the cards name (case-insensitive)'''
+        return filter.lower() in card.name.lower()
 
     def classFunc(filter, card: Card):
-        '''Returns true if the filter is contained within the cards class.
+        '''Returns true if the filter is contained within the cards class (case-insensitive).
         Returns False if the card is not a Signi'''
         if type(card) != Signi:
             return False
-        return filter in card.clas
+        return filter.lower() in card.clas.lower()
 
     def levelFunc(filter, card):
         '''Returns true if the filter matches the cards level.
@@ -28,8 +28,8 @@ class SearchEngine:
         return card.level == int(filter)
 
     def textFunc(filter, card: Card):
-        '''Returns true if the filter is contained inside the cards textbox'''
-        return filter in card.textBox
+        '''Returns true if the filter is contained inside the cards textbox (case-insensitive)'''
+        return filter.lower() in card.textBox.lower()
 
     def powerGreaterFunc(filter, card: Card):
         '''Returns true if the cards power is greater than the filter.
@@ -54,7 +54,7 @@ class SearchEngine:
 
     def dissonaFunc(filter: str, card: Card):
         '''Returns true if the card has the dissona subtype'''
-        return card.subtype.lower() == 'dissona'
+        return '(dissona)' in (card.subtype or '').lower()
 
     def lifeburstFunc(filter: str, card: Card):
         '''Returns true if the card has a lifeburst.
@@ -64,7 +64,7 @@ class SearchEngine:
         return card.lifeburst != ""
 
     def colorEqualFunc(filter: str, card: Card):
-        '''Returns true if the filter matches one of the cards colors'''
+        '''Returns true if the filter matches one of the cards colors (case-insensitive)'''
         return any(filter.lower() == c.lower() for c in card.color)
 
     def levelGreater(filter: str, card: Card):
@@ -80,6 +80,10 @@ class SearchEngine:
         if type(card) not in (Signi, Lrig, Assist):
             return False
         return card.level < int(filter)
+
+    def formatFunc(filter: str, card: Card):
+        '''Returns true if the card is legal in the specified format (as/key/diva)'''
+        return filter.lower() in getattr(card, 'formats', set())
 
     # --- Tokenizer ---
 
@@ -270,16 +274,17 @@ class SearchEngine:
 
 # Populated after class definition so method references resolve correctly.
 SearchEngine.FILTER_MAP = {
-    'type:':   SearchEngine.typeFunc,
-    'class:':  SearchEngine.classFunc,
-    'level:':  SearchEngine.levelFunc,
-    'text:':   SearchEngine.textFunc,
-    'is:':     SearchEngine.dissonaFunc,
-    'has:':    SearchEngine.lifeburstFunc,
-    'color:':  SearchEngine.colorEqualFunc,
-    'power>':  SearchEngine.powerGreaterFunc,
-    'power<':  SearchEngine.powerLesserFunc,
-    'power=':  SearchEngine.powerEqual,
-    'level>':  SearchEngine.levelGreater,
-    'level<':  SearchEngine.levelLower,
+    'type:':    SearchEngine.typeFunc,
+    'class:':   SearchEngine.classFunc,
+    'level:':   SearchEngine.levelFunc,
+    'text:':    SearchEngine.textFunc,
+    'is:':      SearchEngine.dissonaFunc,
+    'has:':     SearchEngine.lifeburstFunc,
+    'color:':   SearchEngine.colorEqualFunc,
+    'format:':  SearchEngine.formatFunc,
+    'power>':   SearchEngine.powerGreaterFunc,
+    'power<':   SearchEngine.powerLesserFunc,
+    'power=':   SearchEngine.powerEqual,
+    'level>':   SearchEngine.levelGreater,
+    'level<':   SearchEngine.levelLower,
 }

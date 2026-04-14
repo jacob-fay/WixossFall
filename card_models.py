@@ -43,8 +43,8 @@ class Cost:
     
     
 class Card:
-    __slots__ = ('id','set','name','color','cardType','artist','textBox','image','subtype')
-    def __init__(self,id:int,set:Set,name:str,color:list,cardType: CardType,artist:str,textBox: str,image: str,subtype:str) -> None: #color is a set
+    __slots__ = ('id','set','name','color','cardType','artist','textBox','image','subtype','formats')
+    def __init__(self,id:int,set:Set,name:str,color:list,cardType: CardType,artist:str,textBox: str,image: str,subtype:str,formats=None) -> None: #color is a set
         self.id = id
         self.artist = artist
         self.set = set
@@ -54,6 +54,7 @@ class Card:
         self.textBox = textBox
         self.image = image
         self.subtype = subtype
+        self.formats = formats if formats is not None else set()
     def __str__(self):
        return f'{self.name} is a {self.cardType}  that has colors {self.color}.\nIt is from the set {self.set}.\nTextBox: {self.textBox}\nIt\'s artist is {self.artist}'
 

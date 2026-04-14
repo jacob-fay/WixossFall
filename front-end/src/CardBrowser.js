@@ -20,7 +20,7 @@ class CardItem extends Component {
     }
 
     render() {
-        const { imageName, name } = this.props;
+        const { imageName, name, cardText } = this.props;
         const src = CardDatabase.resolveLocalImageUrl(imageName);
         return (
             <div className="card-item">
@@ -30,6 +30,7 @@ class CardItem extends Component {
                     onError={this.handleError}
                 />
                 <div className="card-item-name">{name}</div>
+                {cardText && <div className="card-item-tooltip">{cardText}</div>}
             </div>
         );
     }
@@ -162,7 +163,7 @@ class MainPage extends Component {
                     <button className="btn btn-secondary" onClick={this.reset}>Reset</button>
                 </div>
                 <p className="search-hint">
-                    Filters: type: · class: · level: · text: · color: · power&gt; · power&lt; · power= · level&gt; · level&lt; · has:lifeburst · is:dissona &nbsp;|&nbsp; Operators: <code>and</code> · <code>or</code> · <code>-</code> (not) · <code>( )</code> grouping
+                    Filters: type: · class: · level: · text: · color: · power&gt; · power&lt; · power= · level&gt; · level&lt; · has:lifeburst · is:dissona · format:as/key/diva &nbsp;|&nbsp; Operators: <code>and</code> · <code>or</code> · <code>-</code> (not) · <code>( )</code> grouping &nbsp;|&nbsp; All searches are case-insensitive
                 </p>
 
                 {cards.length > 0 ? (
@@ -172,6 +173,7 @@ class MainPage extends Component {
                                 key={card.image + i}
                                 imageName={card.image}
                                 name={card.name}
+                                cardText={card.textBox}
                             />
                         ))}
                     </div>

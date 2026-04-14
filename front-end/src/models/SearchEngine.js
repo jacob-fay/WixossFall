@@ -5,16 +5,16 @@ export class SearchEngine {
 
     static typeFunc(filter, card) {
         const typeMap = { signi: Signi, spell: Spell, lrig: Lrig, assist: Assist, piece: Piece };
-        return typeMap[filter] && card instanceof typeMap[filter];
+        return typeMap[filter.toLowerCase()] && card instanceof typeMap[filter.toLowerCase()];
     }
 
     static nameFunc(filter, card) {
-        return card.name.includes(filter);
+        return card.name.toLowerCase().includes(filter.toLowerCase());
     }
 
     static classFunc(filter, card) {
         if (!(card instanceof Signi)) return false;
-        return card.clas.includes(filter);
+        return card.clas.toLowerCase().includes(filter.toLowerCase());
     }
 
     static levelFunc(filter, card) {
@@ -23,7 +23,7 @@ export class SearchEngine {
     }
 
     static textFunc(filter, card) {
-        return card.textBox.includes(filter);
+        return card.textBox.toLowerCase().includes(filter.toLowerCase());
     }
 
     static powerGreaterFunc(filter, card) {
@@ -42,7 +42,7 @@ export class SearchEngine {
     }
 
     static dissonaFunc(filter, card) {
-        return card.subtype && card.subtype.toLowerCase() === 'dissona';
+        return (card.subtype || '').toLowerCase().includes('(dissona)');
     }
 
     static lifeburstFunc(filter, card) {
@@ -63,6 +63,10 @@ export class SearchEngine {
     static levelLower(filter, card) {
         if (!(card instanceof Signi) && !(card instanceof Lrig) && !(card instanceof Assist)) return false;
         return card.level < parseInt(filter);
+    }
+
+    static formatFunc(filter, card) {
+        return card.formats instanceof Set && card.formats.has(filter.toLowerCase());
     }
 
     // --- Tokenizer ---
@@ -258,16 +262,17 @@ export class SearchEngine {
 
 // Populated after class definition so static method references resolve correctly.
 SearchEngine._FILTER_MAP = {
-    'type:':   SearchEngine.typeFunc,
-    'class:':  SearchEngine.classFunc,
-    'level:':  SearchEngine.levelFunc,
-    'text:':   SearchEngine.textFunc,
-    'is:':     SearchEngine.dissonaFunc,
-    'has:':    SearchEngine.lifeburstFunc,
-    'color:':  SearchEngine.colorEqualFunc,
-    'power>':  SearchEngine.powerGreaterFunc,
-    'power<':  SearchEngine.powerLesserFunc,
-    'power=':  SearchEngine.powerEqual,
-    'level>':  SearchEngine.levelGreater,
-    'level<':  SearchEngine.levelLower,
+    'type:':    SearchEngine.typeFunc,
+    'class:':   SearchEngine.classFunc,
+    'level:':   SearchEngine.levelFunc,
+    'text:':    SearchEngine.textFunc,
+    'is:':      SearchEngine.dissonaFunc,
+    'has:':     SearchEngine.lifeburstFunc,
+    'color:':   SearchEngine.colorEqualFunc,
+    'format:':  SearchEngine.formatFunc,
+    'power>':   SearchEngine.powerGreaterFunc,
+    'power<':   SearchEngine.powerLesserFunc,
+    'power=':   SearchEngine.powerEqual,
+    'level>':   SearchEngine.levelGreater,
+    'level<':   SearchEngine.levelLower,
 };

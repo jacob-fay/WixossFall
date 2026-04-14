@@ -93,18 +93,21 @@ class db:
     def cardParser(card:dict) -> Card:
         int = 'none'
         name = card["name"]
-        cardText = card["text"]
+        cardText = card.get("text") or ''
         artist = 'none'
-        set = card["set"]
-        color =  'none'
+        card_set = card["set"]
+        color = 'none'
         image = card['image']
-        subtype = ''
-       
-        try:
-            subtype = card['subtype']
-            return Card(int,set,name,color,CardType.piece,artist,cardText,image,subtype)
-        except: 
-            return Card(int,set,name,color,CardType.piece,artist,cardText,image,'')
+        subtype = card.get('subtype') or ''
+        if not subtype and card.get('type'):
+            parts = card['type'].split('- ')
+            if len(parts) > 1:
+                subtype = '- '.join(parts[1:])
+        formats = set()
+        if card.get('format-allstar') == 'legal': formats.add('as')
+        if card.get('format-key') == 'legal': formats.add('key')
+        if card.get('format-diva') == 'legal': formats.add('diva')
+        return Card(int, card_set, name, color, CardType.piece, artist, cardText, image, subtype, formats)
         
 
 
@@ -119,8 +122,9 @@ class db:
                 timing = db.timeConverter(card['text'].split('se Timing: [')[1].split(']')[0])
             except:
                 timing = Timing.main
-       
-        return Piece(cardparsed.id,cardparsed.set,cardparsed.name,cardparsed.color,CardType.piece,cardparsed.artist,cardparsed.textBox,cost,timing,cardparsed.image)
+        result = Piece(cardparsed.id,cardparsed.set,cardparsed.name,cardparsed.color,CardType.piece,cardparsed.artist,cardparsed.textBox,cost,timing,cardparsed.image)
+        result.formats = cardparsed.formats
+        return result
     def artParser(card:dict) -> Piece:
         cardparsed = db.cardParser(card)
         cardparsed:Card
@@ -132,8 +136,9 @@ class db:
                 timing = db.artsTimeConverter(card['text'].split('se Timing: [')[1].split(']')[0])
             except:
                 timing = Timing.main
-       
-        return Art(cardparsed.id,cardparsed.set,cardparsed.name,cardparsed.color,CardType.piece,cardparsed.artist,cardparsed.textBox,cost,timing,cardparsed.image)
+        result = Art(cardparsed.id,cardparsed.set,cardparsed.name,cardparsed.color,CardType.piece,cardparsed.artist,cardparsed.textBox,cost,timing,cardparsed.image)
+        result.formats = cardparsed.formats
+        return result
     def resonaParser(card:dict):
         cardparsed = db.cardParser(card)
         power = card["pt"]
@@ -145,7 +150,9 @@ class db:
         else:
             lifeburst = None
         clas = card['type'].split('- ')[1]
-        return Resona(cardparsed.id,cardparsed.set,cardparsed.name,cardparsed.color,CardType.signi,cardparsed.artist,cardparsed.textBox,power,lifeburst,level,cardparsed.image,clas,cardparsed.subtype)
+        result = Resona(cardparsed.id,cardparsed.set,cardparsed.name,cardparsed.color,CardType.signi,cardparsed.artist,cardparsed.textBox,power,lifeburst,level,cardparsed.image,clas,cardparsed.subtype)
+        result.formats = cardparsed.formats
+        return result
     def signiParser(card:dict):
         cardparsed = db.cardParser(card)
         power = card["pt"]
@@ -157,25 +164,33 @@ class db:
         else:
             lifeburst = None
         clas = card['type'].split('- ')[1]
-        return Signi(cardparsed.id,cardparsed.set,cardparsed.name,cardparsed.color,CardType.signi,cardparsed.artist,cardparsed.textBox,power,lifeburst,level,cardparsed.image,clas,cardparsed.subtype)
+        result = Signi(cardparsed.id,cardparsed.set,cardparsed.name,cardparsed.color,CardType.signi,cardparsed.artist,cardparsed.textBox,power,lifeburst,level,cardparsed.image,clas,cardparsed.subtype)
+        result.formats = cardparsed.formats
+        return result
     def assistParser(card:dict):
         cardparsed = db.cardParser(card)
         cost = db.costConverter(card["cost"])
         timing = db.timeConverter(card["guard_coin_timing"])
         limit = db.limitConverter(card['limits'])
         level = int(card['level'])
-        return Assist(cardparsed.id,cardparsed.set,cardparsed.name,cardparsed.color,CardType.assist,cardparsed.artist,cardparsed.textBox,limit,level,cost,timing,cardparsed.image)
+        result = Assist(cardparsed.id,cardparsed.set,cardparsed.name,cardparsed.color,CardType.assist,cardparsed.artist,cardparsed.textBox,limit,level,cost,timing,cardparsed.image)
+        result.formats = cardparsed.formats
+        return result
     def lrigParser(card:dict):
         cardparsed = db.cardParser(card)
         cost = db.costConverter(card["manacost"])
         limit = db.limitConverter(card['loyalty'])
         level = int(card['cmc'])
-        return Lrig(cardparsed.id,cardparsed.set,cardparsed.name,cardparsed.color,CardType.lrig,cardparsed.artist,cardparsed.textBox,limit,level,cost,cardparsed.image)
+        result = Lrig(cardparsed.id,cardparsed.set,cardparsed.name,cardparsed.color,CardType.lrig,cardparsed.artist,cardparsed.textBox,limit,level,cost,cardparsed.image)
+        result.formats = cardparsed.formats
+        return result
     def spellParser(card:dict):
         cardparsed = db.cardParser(card)
         cost = db.costConverter(card["manacost"])
         lifeburst = None
-        return Spell(cardparsed.id,cardparsed.set,cardparsed.name,cardparsed.color,CardType.spell,cardparsed.artist,cardparsed.textBox,cost,cardparsed.image,cardparsed.subtype,lifeburst)
+        result = Spell(cardparsed.id,cardparsed.set,cardparsed.name,cardparsed.color,CardType.spell,cardparsed.artist,cardparsed.textBox,cost,cardparsed.image,cardparsed.subtype,lifeburst)
+        result.formats = cardparsed.formats
+        return result
 
 
 
