@@ -5,9 +5,19 @@ from flask_restful import reqparse
 from flask import send_from_directory
 from flask import abort
 from card_xml_parser import db
-from os.path import isfile
+from os.path import isfile, basename
+import re
 import requests
+
+SAFE_FILENAME_RE = re.compile(r'^[\w\-\[\]. ()]+$')
+
 class Cardart(Resource):
+    def _validate_name(self, name):
+        '''Reject names that could cause path traversal or unexpected URL construction.'''
+        safe = basename(name)
+        if safe != name or not SAFE_FILENAME_RE.match(name):
+            abort(400)
+
     def downloadImageJP(self,name):
         '''https://www.takaratomy.co.jp/products/wixoss/img/card/SPK02/SPK02-11C.jpg'''
         url = f'''https://www.takaratomy.co.jp/products/wixoss/img/card/{name.split('-')[0]}/{name}'''
@@ -31,6 +41,7 @@ class Cardart(Resource):
             with open(f'cards/{name}', 'wb') as handler:
                 handler.write(img_data)
     def get(self,name):
+        self._validate_name(name)
         if isfile(f'cards/{name}'):
             return send_from_directory('cards',name)
       
