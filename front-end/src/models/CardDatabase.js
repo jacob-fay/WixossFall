@@ -76,7 +76,7 @@ export class CardDatabase {
     }
 
     static cardParser(card) {
-        const name = card['name'];
+        const name = (card['name'] || '').replace(/\(\([^)]*\)\)/g, '').trim();
         const cardText = card['text'] || '';
         const set = card['set'];
         const image = card['image'];
@@ -301,8 +301,8 @@ export class CardDatabase {
         if (imageName.includes('[EN]')) {
             return `https://www.takaratomy.co.jp/products/en.wixoss/card/thumb/${imageName}`;
         }
-        if (imageName.includes('(')) {
-            return `https://raw.githubusercontent.com/TetrusAO/Wixoss-TCG-Cockatrice-Plugin/master/pics/CUSTOM/${encodeURIComponent(imageName)}`;
+        if (imageName.includes('(') || !imageName.includes('-')) {
+            return `https://raw.githubusercontent.com/TetrusAO/Wixoss-TCG-Cockatrice-Plugin/master/pics/CUSTOM/${imageName}`;
         }
         const setCode = imageName.split('-')[0];
         return `https://www.takaratomy.co.jp/products/wixoss/img/card/${setCode}/${imageName}`;

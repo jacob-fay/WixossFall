@@ -79,6 +79,7 @@ export class SearchEngine {
      *
      * Rules:
      *  - '(' and ')' become LPAREN / RPAREN
+    *  - Text wrapped in double quotes becomes one literal PREDICATE (operators inside are ignored)
      *  - The bare keyword 'and' (case-insensitive) becomes AND
      *  - The bare keyword 'or'  (case-insensitive) becomes OR
      *  - A standalone '-' becomes NOT
@@ -94,6 +95,26 @@ export class SearchEngine {
 
             if (input[i] === '(') { tokens.push({ type: 'LPAREN' }); i++; continue; }
             if (input[i] === ')') { tokens.push({ type: 'RPAREN' }); i++; continue; }
+
+            // Quoted literal: treat the entire content as a single name predicate.
+            if (input[i] === '"') {
+                let j = i + 1;
+                let value = '';
+                while (j < input.length) {
+                    // Support escaped quote: \"
+                    if (input[j] === '\\' && j + 1 < input.length && input[j + 1] === '"') {
+                        value += '"';
+                        j += 2;
+                        continue;
+                    }
+                    if (input[j] === '"') break;
+                    value += input[j];
+                    j++;
+                }
+                tokens.push({ type: 'PREDICATE', value, literal: true });
+                i = (j < input.length && input[j] === '"') ? j + 1 : j;
+                continue;
+            }
 
             // Read a non-whitespace, non-paren word
             let j = i;
@@ -184,6 +205,9 @@ export class SearchEngine {
         }
 
         if (t.type === 'PREDICATE') {
+            if (t.literal) {
+                return [{ type: 'PREDICATE', fn: SearchEngine.nameFunc, filter: t.value }, pos + 1];
+            }
             return [SearchEngine._buildPredicateNode(t.value), pos + 1];
         }
 
@@ -238,6 +262,7 @@ export class SearchEngine {
      *   field1 field2            implicit AND (both must match)
      *   field1 and field2        explicit AND
      *   field1 or field2         OR (either must match)
+    *   "literal text"          exact literal substring in card name
      *   -field1                  NOT (field must not match)
      *   -(field1 or field2)      NOT applied to a group
      *   (field1 or field2) and field3   grouping with parentheses

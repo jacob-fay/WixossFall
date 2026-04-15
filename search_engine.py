@@ -6,7 +6,7 @@ class SearchEngine:
 
     def typeFunc(filter, card: Card):
         '''Returns true if the filter matches the card type of the card'''
-        typeMap = {'signi': Signi, 'spell': Spell, 'lrig': Lrig, 'assist': Assist, 'piece': Piece}
+        typeMap = {'signi': Signi, 'spell': Spell, 'lrig': Lrig, 'assist': Assist, 'piece': Piece, 'art': Art}
         return typeMap.get(filter.lower()) == type(card)
 
     def nameFunc(filter, card: Card):
