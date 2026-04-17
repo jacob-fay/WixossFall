@@ -4,6 +4,7 @@ import { CardDatabase } from './models/CardDatabase';
 import { SearchEngine } from './models/SearchEngine';
 
 const PAGE_SIZE = 16;
+const TOOLTIP_GAP_PX = 12;
 
 const Route = {
     home: 'home',
@@ -20,8 +21,18 @@ function formatDetailValue(value) {
     if (value === null || value === undefined) return '';
     if (value instanceof Set) return Array.from(value).join(', ');
     if (Array.isArray(value)) return value.join(', ');
+    if (typeof value === 'object' && typeof value.toString === 'function' && value.toString !== Object.prototype.toString) {
+        return value.toString();
+    }
     if (typeof value === 'object') return JSON.stringify(value);
     return String(value);
+}
+
+function getCardRouteId(card) {
+    const image = card.image || '';
+    const set = card.set || '';
+    const name = card.name || '';
+    return `${image}|${set}|${name}`;
 }
 
 class CardItem extends Component {
@@ -46,7 +57,7 @@ class CardItem extends Component {
         if (!cardEl || !tooltipEl) return;
 
         const cardRect = cardEl.getBoundingClientRect();
-        const tooltipHeight = tooltipEl.scrollHeight + 12;
+        const tooltipHeight = tooltipEl.scrollHeight + TOOLTIP_GAP_PX;
         const spaceBelow = window.innerHeight - cardRect.bottom;
         const showAbove = spaceBelow < tooltipHeight && cardRect.top > spaceBelow;
 
@@ -319,7 +330,7 @@ function CardDetailPage({ card, onBack }) {
         ['Power', card.power],
         ['Limit', card.limit],
         ['Timing', card.timing],
-        ['Cost', card.cost && card.cost.toString ? card.cost.toString() : formatDetailValue(card.cost)],
+        ['Cost', card.cost],
         ['Formats', formatDetailValue(card.formats)],
         ['Life Burst', card.lifeburst],
         ['Artist', card.artist],
@@ -418,13 +429,13 @@ class CardBrowser extends Component {
     }
 
     openCard = (card) => {
-        const cardId = card.image || card.name;
+        const cardId = getCardRouteId(card);
         window.location.hash = `/card/${encodeURIComponent(cardId)}`;
     }
 
     getSelectedCard() {
         const { cardId } = this.state.route;
-        return this.state.allCards.find((card) => (card.image || card.name) === cardId);
+        return this.state.allCards.find((card) => getCardRouteId(card) === cardId);
     }
 
     renderStatusPage(icon, message) {
