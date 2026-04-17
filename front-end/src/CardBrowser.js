@@ -15,14 +15,14 @@ const Route = {
 
 function normalizeName(name) {
     if (!name) return '';
-    return name.includes(' (') ? name.split(' (')[0] : name;
+    return name.replace(/\s\([^)]*\)$/, '');
 }
 
 function formatDetailValue(value) {
     if (value === null || value === undefined) return '';
     if (value instanceof Set) return Array.from(value).join(', ');
     if (Array.isArray(value)) return value.join(', ');
-    if (typeof value === 'object' && typeof value.toString === 'function' && value.toString !== Object.prototype.toString) {
+    if (typeof value === 'object' && 'colorMap' in value && 'totalCost' in value && typeof value.toString === 'function') {
         return value.toString();
     }
     if (typeof value === 'object') return JSON.stringify(value);
@@ -61,9 +61,9 @@ class CardItem extends Component {
         if (!cardEl) return;
 
         const cardRect = cardEl.getBoundingClientRect();
-        const tooltipHeight = TOOLTIP_ESTIMATED_HEIGHT_PX + TOOLTIP_GAP_PX;
+        const tooltipSpaceNeeded = TOOLTIP_ESTIMATED_HEIGHT_PX + TOOLTIP_GAP_PX;
         const spaceBelow = window.innerHeight - cardRect.bottom;
-        const showAbove = spaceBelow < tooltipHeight && cardRect.top > spaceBelow;
+        const showAbove = spaceBelow < tooltipSpaceNeeded && cardRect.top > spaceBelow;
 
         if (showAbove !== this.state.tooltipAbove) {
             this.setState({ tooltipAbove: showAbove });
