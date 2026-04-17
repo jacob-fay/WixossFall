@@ -41,6 +41,14 @@ function clampOffset(offset, total) {
     return Math.max(0, Math.min(offset, maxStart));
 }
 
+function buildHomeHash(query, offset) {
+    const params = new URLSearchParams();
+    if (query) params.set('q', query);
+    if (offset > 0) params.set('o', String(offset));
+    const qs = params.toString();
+    return `#/${qs ? '?' + qs : ''}`;
+}
+
 class CardItem extends Component {
     constructor(props) {
         super(props);
@@ -109,17 +117,18 @@ class CardItem extends Component {
 class MainPage extends Component {
     constructor(props) {
         super(props);
+        const initialQuery = props.initialQuery || '';
         this.state = {
             cards: [],
-            searchQuery: '',
-            field: '',
+            searchQuery: initialQuery,
+            field: initialQuery,
             offset: 0,
             totalResults: 0,
         };
     }
 
     componentDidMount() {
-        this._applySearch('', 0, this.props.allCards);
+        this._applySearch(this.props.initialQuery || '', this.props.initialOffset || 0, this.props.allCards);
     }
 
     componentDidUpdate(prevProps) {
@@ -141,6 +150,10 @@ class MainPage extends Component {
         const results = Array.from(seen.values());
         const clampedOffset = clampOffset(offset, results.length);
         const page = results.slice(clampedOffset, clampedOffset + PAGE_SIZE);
+
+        // Keep home URL in sync so the browser back button restores the search.
+        window.history.replaceState(null, '', buildHomeHash(query, clampedOffset));
+
         this.setState({ cards: page, offset: clampedOffset, totalResults: results.length });
     }
 
@@ -421,7 +434,12 @@ class CardBrowser extends Component {
             return;
         }
 
-        this.setState({ route: { type: Route.home, cardId: '' } });
+        // Home page: parse optional search/pagination params (?q=...&o=...)
+        const qmarkIdx = path.indexOf('?');
+        const params = new URLSearchParams(qmarkIdx >= 0 ? path.slice(qmarkIdx + 1) : '');
+        const query = params.get('q') || '';
+        const offset = parseInt(params.get('o'), 10) || 0;
+        this.setState({ route: { type: Route.home, cardId: '', query, offset } });
     }
 
     openHelp = () => {
@@ -429,7 +447,7 @@ class CardBrowser extends Component {
     }
 
     openHome = () => {
-        window.location.hash = '/';
+        window.history.back();
     }
 
     openCard = (card) => {
@@ -478,7 +496,8 @@ class CardBrowser extends Component {
             return <CardDetailPage card={this.getSelectedCard()} onBack={this.openHome} />;
         }
 
-        return <MainPage allCards={allCards} onOpenHelp={this.openHelp} onOpenCard={this.openCard} />;
+        return <MainPage allCards={allCards} onOpenHelp={this.openHelp} onOpenCard={this.openCard}
+                    initialQuery={route.query || ''} initialOffset={route.offset || 0} />;
     }
 }
 
