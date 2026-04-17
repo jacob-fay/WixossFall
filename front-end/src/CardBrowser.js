@@ -5,6 +5,7 @@ import { SearchEngine } from './models/SearchEngine';
 
 const PAGE_SIZE = 16;
 const TOOLTIP_GAP_PX = 12;
+const TOOLTIP_ESTIMATED_HEIGHT_PX = 232;
 
 const Route = {
     home: 'home',
@@ -35,12 +36,16 @@ function getCardRouteId(card) {
     return `${image}|${set}|${name}`;
 }
 
+function clampOffset(offset, total) {
+    const maxStart = Math.max(0, total - PAGE_SIZE);
+    return Math.max(0, Math.min(offset, maxStart));
+}
+
 class CardItem extends Component {
     constructor(props) {
         super(props);
         this.state = { triedFallback: false, tooltipAbove: false };
         this.cardRef = createRef();
-        this.tooltipRef = createRef();
     }
 
     handleError = (e) => {
@@ -53,11 +58,10 @@ class CardItem extends Component {
 
     handleMouseEnter = () => {
         const cardEl = this.cardRef.current;
-        const tooltipEl = this.tooltipRef.current;
-        if (!cardEl || !tooltipEl) return;
+        if (!cardEl) return;
 
         const cardRect = cardEl.getBoundingClientRect();
-        const tooltipHeight = tooltipEl.scrollHeight + TOOLTIP_GAP_PX;
+        const tooltipHeight = TOOLTIP_ESTIMATED_HEIGHT_PX + TOOLTIP_GAP_PX;
         const spaceBelow = window.innerHeight - cardRect.bottom;
         const showAbove = spaceBelow < tooltipHeight && cardRect.top > spaceBelow;
 
@@ -82,6 +86,7 @@ class CardItem extends Component {
                 onClick={this.handleClick}
                 onMouseEnter={this.handleMouseEnter}
                 ref={this.cardRef}
+                aria-label={`Open details for ${name}`}
             >
                 <img
                     src={src}
@@ -92,7 +97,6 @@ class CardItem extends Component {
                 {cardText && (
                     <div
                         className={`card-item-tooltip ${tooltipAbove ? 'card-item-tooltip-above' : ''}`}
-                        ref={this.tooltipRef}
                     >
                         {cardText}
                     </div>
@@ -135,7 +139,7 @@ class MainPage extends Component {
         }
 
         const results = Array.from(seen.values());
-        const clampedOffset = Math.max(0, Math.min(offset, Math.max(0, results.length - PAGE_SIZE)));
+        const clampedOffset = clampOffset(offset, results.length);
         const page = results.slice(clampedOffset, clampedOffset + PAGE_SIZE);
         this.setState({ cards: page, offset: clampedOffset, totalResults: results.length });
     }
@@ -405,15 +409,15 @@ class CardBrowser extends Component {
     syncRouteFromHash = () => {
         const hash = window.location.hash || '#/';
         const path = hash.startsWith('#') ? hash.slice(1) : hash;
-        const segments = path.split('/').filter(Boolean);
 
-        if (segments[0] === 'help') {
+        if (path === '/help' || path === 'help') {
             this.setState({ route: { type: Route.help, cardId: '' } });
             return;
         }
 
-        if (segments[0] === 'card' && segments[1]) {
-            this.setState({ route: { type: Route.card, cardId: decodeURIComponent(segments.slice(1).join('/')) } });
+        if (path.startsWith('/card/')) {
+            const cardId = decodeURIComponent(path.slice('/card/'.length));
+            this.setState({ route: { type: Route.card, cardId } });
             return;
         }
 

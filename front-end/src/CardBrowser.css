@@ -205,7 +205,7 @@
     max-height: 220px;
     overflow-y: auto;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.85);
-    pointer-events: auto;
+    pointer-events: none;
 }
 
 .card-item-tooltip-above {
@@ -215,6 +215,7 @@
 
 .card-item:hover .card-item-tooltip {
     opacity: 1;
+    pointer-events: auto;
 }
 
 /* ── Empty / loading / error states ────────────────────────── */
