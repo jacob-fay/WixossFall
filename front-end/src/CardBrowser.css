@@ -15,6 +15,18 @@
     align-items: center;
     justify-content: space-between;
     box-shadow: 0 4px 24px rgba(199, 0, 110, 0.3);
+    gap: 12px;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.result-count {
+    color: #6060a0;
+    font-size: 0.8rem;
 }
 
 .header-title {
@@ -71,13 +83,6 @@
     box-shadow: 0 0 0 3px rgba(199, 0, 110, 0.2);
 }
 
-.search-hint {
-    font-size: 1.125rem;
-    color: #6060a0;
-    padding: 4px 32px 16px;
-    text-align: center;
-}
-
 /* ── Buttons ────────────────────────────────────────────────── */
 .btn {
     padding: 9px 20px;
@@ -88,6 +93,7 @@
     font-weight: 500;
     cursor: pointer;
     transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+    text-decoration: none;
 }
 
 .btn:active {
@@ -138,6 +144,9 @@
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
     aspect-ratio: 5 / 7;
+    border: 0;
+    padding: 0;
+    text-align: inherit;
 }
 
 .card-item:hover {
@@ -190,17 +199,23 @@
     line-height: 1.55;
     color: #d0d0e8;
     white-space: pre-wrap;
-    pointer-events: none;
     opacity: 0;
     transition: opacity 0.2s;
     z-index: 100;
     max-height: 220px;
     overflow-y: auto;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.85);
+    pointer-events: none;
+}
+
+.card-item-tooltip-above {
+    top: auto;
+    bottom: calc(100% + 6px);
 }
 
 .card-item:hover .card-item-tooltip {
     opacity: 1;
+    pointer-events: auto;
 }
 
 /* ── Empty / loading / error states ────────────────────────── */
@@ -231,4 +246,110 @@
 .pagination-info {
     font-size: 0.8rem;
     color: #6060a0;
+}
+
+/* ── Help page ──────────────────────────────────────────────── */
+.help-page {
+    max-width: 960px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px 32px 36px;
+    display: grid;
+    gap: 18px;
+}
+
+.help-section {
+    background: #16162a;
+    border: 1px solid #3a3a5a;
+    border-radius: 10px;
+    padding: 16px 18px;
+}
+
+.help-section h2 {
+    margin: 0 0 10px;
+    color: #f0f0ff;
+    font-size: 1.05rem;
+}
+
+.help-section ul {
+    margin: 0;
+    padding-left: 20px;
+    color: #d0d0e8;
+}
+
+.help-section li {
+    margin-bottom: 8px;
+}
+
+.help-section p {
+    margin: 10px 0 0;
+    color: #c0c0e0;
+}
+
+.help-section code {
+    color: #ffd0f0;
+}
+
+/* ── Card detail page ───────────────────────────────────────── */
+.card-detail-page {
+    display: grid;
+    grid-template-columns: minmax(260px, 430px) minmax(320px, 1fr);
+    gap: 24px;
+    align-items: start;
+    padding: 24px 32px 36px;
+}
+
+.card-detail-image-wrap {
+    background: #16162a;
+    border: 1px solid #3a3a5a;
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.card-detail-image {
+    width: 100%;
+    display: block;
+    border-radius: 10px;
+}
+
+.card-detail-info {
+    background: #16162a;
+    border: 1px solid #3a3a5a;
+    border-radius: 12px;
+    padding: 16px;
+    display: grid;
+    gap: 12px;
+}
+
+.detail-row {
+    display: grid;
+    gap: 4px;
+}
+
+.detail-label {
+    color: #9090c0;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.detail-value {
+    color: #ececff;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 900px) {
+    .card-detail-page {
+        grid-template-columns: 1fr;
+    }
+
+    .header {
+        flex-wrap: wrap;
+    }
+
+    .header-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
 }
