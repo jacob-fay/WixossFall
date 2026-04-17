@@ -219,9 +219,7 @@ class MainPage extends Component {
                     />
                     <button className="btn btn-secondary" onClick={this.reset}>Reset</button>
                 </div>
-                <p className="search-hint">
-                    Filters: type: · class: · level: · text: · color: · power&gt; · power&lt; · power= · level&gt; · level&lt; · has:lifeburst · is:dissona · format:as/key/diva &nbsp;|&nbsp; Operators: <code>and</code> · <code>or</code> · <code>-</code> (not) · <code>( )</code> grouping · <code>"..."</code> name literal &nbsp;|&nbsp; All searches are case-insensitive
-                </p>
+          
 
                 {cards.length > 0 ? (
                     <div className="card-grid">
