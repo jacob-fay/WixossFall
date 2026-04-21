@@ -56,11 +56,19 @@ class CardItem extends Component {
         this.cardRef = createRef();
     }
 
-    handleError = (e) => {
+    handleError = async (e) => {
         if (!this.state.triedFallback) {
-            const fallback = CardDatabase.resolveExternalImageUrl(this.props.imageName);
             this.setState({ triedFallback: true });
-            e.target.src = fallback;
+            const target = e.currentTarget;
+            const imageName = this.props.imageName;
+
+            const cached = await CardDatabase.cacheImageLocallyOnLocalhost(imageName);
+            if (cached) {
+                target.src = `${CardDatabase.resolveLocalImageUrl(imageName)}?t=${Date.now()}`;
+                return;
+            }
+
+            target.src = CardDatabase.resolveExternalImageUrl(imageName);
         }
     }
 
@@ -356,6 +364,19 @@ function CardDetailPage({ card, onBack }) {
         ['Text', card.textBox],
     ].filter(([, value]) => value !== null && value !== undefined && value !== '');
 
+    const handleDetailImageError = async (e) => {
+        const imageName = card.image;
+        const target = e.currentTarget;
+
+        const cached = await CardDatabase.cacheImageLocallyOnLocalhost(imageName);
+        if (cached) {
+            target.src = `${CardDatabase.resolveLocalImageUrl(imageName)}?t=${Date.now()}`;
+            return;
+        }
+
+        target.src = CardDatabase.resolveExternalImageUrl(imageName);
+    };
+
     return (
         <div className="page">
             <header className="header">
@@ -372,9 +393,7 @@ function CardDetailPage({ card, onBack }) {
                         className="card-detail-image"
                         src={CardDatabase.resolveLocalImageUrl(card.image)}
                         alt={card.name}
-                        onError={(e) => {
-                            e.currentTarget.src = CardDatabase.resolveExternalImageUrl(card.image);
-                        }}
+                        onError={handleDetailImageError}
                     />
                 </div>
 

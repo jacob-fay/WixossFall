@@ -309,6 +309,35 @@ export class CardDatabase {
     }
 
     /**
+     * Returns true when running on localhost so the dev-only caching endpoint can be used.
+     * @returns {boolean}
+     */
+    static isLocalhost() {
+        if (typeof window === 'undefined') return false;
+        const host = window.location.hostname;
+        return host === 'localhost' || host === '127.0.0.1' || host === '[::1]';
+    }
+
+    /**
+     * Dev-only helper that asks the CRA dev server to download a missing card image
+     * into front-end/public/cards/ so subsequent requests load locally.
+     * @param {string} imageName
+     * @returns {Promise<boolean>}
+     */
+    static async cacheImageLocallyOnLocalhost(imageName) {
+        if (!imageName || !CardDatabase.isLocalhost()) return false;
+
+        try {
+            const response = await fetch(`/__dev__/cache-card-image?name=${encodeURIComponent(imageName)}`, {
+                method: 'POST',
+            });
+            return response.ok;
+        } catch {
+            return false;
+        }
+    }
+
+    /**
      * @deprecated Use resolveLocalImageUrl() for src and resolveExternalImageUrl() for onError fallback.
      */
     static resolveImageUrl(imageName) {
