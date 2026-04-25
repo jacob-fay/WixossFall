@@ -1,3 +1,6 @@
+_set = set  # capture built-in 'set' before it is shadowed by a parameter name
+
+
 class Timing:
     attack = 'attack'
     main = 'main'
@@ -54,7 +57,7 @@ class Card:
         self.textBox = textBox
         self.image = image
         self.subtype = subtype
-        self.formats = formats if formats is not None else set()
+        self.formats = formats if formats is not None else _set()
     def __str__(self):
        return f'{self.name} is a {self.cardType}  that has colors {self.color}.\nIt is from the set {self.set}.\nTextBox: {self.textBox}\nIt\'s artist is {self.artist}'
 

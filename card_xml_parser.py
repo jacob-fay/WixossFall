@@ -86,17 +86,23 @@ class db:
         if string.__contains__('G'):
             colorList.append(Color.green)
         return colorList
-    def limitConverter(string:str):
-        match string:
-            case '+ 1':
-                return 1
+    def limitConverter(string: str):
+        if string is None:
+            return None
+        string = string.strip()
+        if string == '∞':
+            return float('inf')
+        try:
+            return int(string)
+        except ValueError:
+            return None
     def cardParser(card:dict) -> Card:
         int = 'none'
         name = card["name"]
         cardText = card.get("text") or ''
         artist = 'none'
         card_set = card["set"]
-        color = 'none'
+        color = db.colorConverter(card.get('colors') or '')
         image = card['image']
         subtype = card.get('subtype') or ''
         if not subtype and card.get('type'):

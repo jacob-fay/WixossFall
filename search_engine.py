@@ -85,6 +85,39 @@ class SearchEngine:
         '''Returns true if the card is legal in the specified format (as/key/diva)'''
         return filter.lower() in getattr(card, 'formats', set())
 
+    def limitEqualFunc(filter: str, card: Card):
+        '''Returns true if the cards limit equals the filter.
+        Returns false if the card does not have a limit attribute'''
+        limit = getattr(card, 'limit', None)
+        if limit is None:
+            return False
+        try:
+            return limit == int(filter)
+        except ValueError:
+            return False
+
+    def limitGreaterFunc(filter: str, card: Card):
+        '''Returns true if the cards limit is greater than the filter.
+        Returns false if the card does not have a limit attribute'''
+        limit = getattr(card, 'limit', None)
+        if limit is None:
+            return False
+        try:
+            return limit > int(filter)
+        except ValueError:
+            return False
+
+    def limitLesserFunc(filter: str, card: Card):
+        '''Returns true if the cards limit is less than the filter.
+        Returns false if the card does not have a limit attribute'''
+        limit = getattr(card, 'limit', None)
+        if limit is None:
+            return False
+        try:
+            return limit < int(filter)
+        except ValueError:
+            return False
+
     # --- Tokenizer ---
 
     @staticmethod
@@ -282,6 +315,9 @@ SearchEngine.FILTER_MAP = {
     'has:':     SearchEngine.lifeburstFunc,
     'color:':   SearchEngine.colorEqualFunc,
     'format:':  SearchEngine.formatFunc,
+    'limit:':   SearchEngine.limitEqualFunc,
+    'limit>':   SearchEngine.limitGreaterFunc,
+    'limit<':   SearchEngine.limitLesserFunc,
     'power>':   SearchEngine.powerGreaterFunc,
     'power<':   SearchEngine.powerLesserFunc,
     'power=':   SearchEngine.powerEqual,
