@@ -3,6 +3,9 @@ const path = require('path');
 const http = require('http');
 const https = require('https');
 const { URL } = require('url');
+const { createProxyMiddleware } = require('http-proxy-middleware');
+
+const FLASK_URL = 'http://localhost:5000';
 
 const SAFE_FILENAME_RE = /^[\w\-\[\]. ()]+$/;
 
@@ -55,7 +58,37 @@ function downloadToFile(urlString, destinationFilePath) {
     });
 }
 
-module.exports = function setupDevImageCaching(app) {
+module.exports = function setupDevProxy(app) {
+    // Proxy /cardart/ and /test/ to the Flask backend so the Python scripts are used
+    // for image serving (with Cloudflare R2 upload) and card search.
+    app.use(
+        '/cardart',
+        createProxyMiddleware({
+            target: FLASK_URL,
+            changeOrigin: true,
+            on: {
+                error: (err, req, res) => {
+                    res.status(502).json({ error: 'Flask backend unavailable. Is server.py running?' });
+                },
+            },
+        })
+    );
+
+    app.use(
+        '/test',
+        createProxyMiddleware({
+            target: FLASK_URL,
+            changeOrigin: true,
+            on: {
+                error: (err, req, res) => {
+                    res.status(502).json({ error: 'Flask backend unavailable. Is server.py running?' });
+                },
+            },
+        })
+    );
+
+    // Legacy dev endpoint: downloads an image into public/cards/ directly via Node.
+    // Used as a fallback when the Flask backend is not running.
     app.post('/__dev__/cache-card-image', async (req, res) => {
         if (process.env.NODE_ENV !== 'development') {
             res.status(403).json({ error: 'Only available in development mode.' });

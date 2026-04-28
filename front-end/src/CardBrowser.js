@@ -62,9 +62,9 @@ class CardItem extends Component {
             const target = e.currentTarget;
             const imageName = this.props.imageName;
 
-            const cached = await CardDatabase.cacheImageLocallyOnLocalhost(imageName);
-            if (cached) {
-                target.src = `${CardDatabase.resolveLocalImageUrl(imageName)}?t=${Date.now()}`;
+            const devUrl = await CardDatabase.cacheImageLocallyOnLocalhost(imageName);
+            if (devUrl) {
+                target.src = devUrl;
                 return;
             }
 

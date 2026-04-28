@@ -319,22 +319,36 @@ export class CardDatabase {
     }
 
     /**
-     * Dev-only helper that asks the CRA dev server to download a missing card image
-     * into front-end/public/cards/ so subsequent requests load locally.
+     * Dev-only helper that fetches a card image through the Flask backend proxy
+     * (/cardart/<name>), which downloads the image, uploads it to Cloudflare R2,
+     * and serves it back. Falls back to the Node.js dev endpoint if Flask is
+     * unavailable. Returns the URL to use as the image src, or null on failure.
      * @param {string} imageName
-     * @returns {Promise<boolean>}
+     * @returns {Promise<string|null>}
      */
     static async cacheImageLocallyOnLocalhost(imageName) {
-        if (!imageName || !CardDatabase.isLocalhost()) return false;
+        if (!imageName || !CardDatabase.isLocalhost()) return null;
 
+        // Primary: use Flask backend which also handles Cloudflare R2 upload.
+        try {
+            const flaskUrl = `/cardart/${encodeURIComponent(imageName)}`;
+            const response = await fetch(flaskUrl, { method: 'HEAD' });
+            if (response.ok) return flaskUrl;
+        } catch {
+            // Flask not running — fall through to Node.js fallback.
+        }
+
+        // Fallback: download via Node.js dev endpoint into public/cards/.
         try {
             const response = await fetch(`/__dev__/cache-card-image?name=${encodeURIComponent(imageName)}`, {
                 method: 'POST',
             });
-            return response.ok;
+            if (response.ok) return `${CardDatabase.resolveLocalImageUrl(imageName)}?t=${Date.now()}`;
         } catch {
-            return false;
+            // ignore
         }
+
+        return null;
     }
 
     /**
