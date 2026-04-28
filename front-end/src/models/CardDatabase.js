@@ -320,20 +320,24 @@ export class CardDatabase {
 
     /**
      * Dev-only helper that asks the CRA dev server to download a missing card image
-     * into front-end/public/cards/ and upload it to Cloudflare R2 (if configured).
+     * into a temp cache dir (not public/) and upload it to Cloudflare R2 (if configured).
+     * Returns the local dev URL to use as the image src, or null on failure.
+     * Saving outside public/ prevents the CRA file-watcher from hot-reloading the page.
      * @param {string} imageName
-     * @returns {Promise<boolean>}
+     * @returns {Promise<string|null>}
      */
     static async cacheImageLocallyOnLocalhost(imageName) {
-        if (!imageName || !CardDatabase.isLocalhost()) return false;
+        if (!imageName || !CardDatabase.isLocalhost()) return null;
 
         try {
             const response = await fetch(`/__dev__/cache-card-image?name=${encodeURIComponent(imageName)}`, {
                 method: 'POST',
             });
-            return response.ok;
+            if (!response.ok) return null;
+            const data = await response.json();
+            return data.url || null;
         } catch {
-            return false;
+            return null;
         }
     }
 
